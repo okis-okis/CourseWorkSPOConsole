@@ -6,20 +6,94 @@ namespace ConsoleProject
 {
     internal class Program
     {
+        static Lexer lexer;
+
         static void Main(string[] args)
         {
             String input = File.ReadAllText("test.c");
             Console.WriteLine(input);
-            Token[] tokens = new Lexer(input).lex();
+
+            lexer = new Lexer(input);
+            Token[] tokens = lexer.lex();
+
+            findValues(tokens);
+
+            List<Token> errorToken = new List<Token>();
+            int error = 0;
+
             foreach(Token token in tokens)
             {
-                Console.WriteLine("Token:");
-                Console.WriteLine("Words: " + token.getToken());
-                Console.WriteLine("Token type: " + 
-                                new TokenTypes().getTokenType(token.getTokenID())
-                                );
-                Console.WriteLine("Token id: " + token.getTokenID());
+                printTokenInfo(token);
+
+                if(token.getTokenID() == new TokenTypes().NOP)
+                {
+                    error++;
+                    errorToken.Add(token);
+                }
+
                 Console.WriteLine();
+            }
+
+            if (error==0)
+            {
+                Console.WriteLine("Ошибки не найдены");
+            }
+            else
+            {
+                Console.WriteLine("==========================");
+                Console.WriteLine("Количество ошибок: "+error);
+                foreach(Token token in errorToken)
+                {
+                    printTokenInfo(token);
+                }
+            }
+        }
+
+        static void printTokenInfo(Token token)
+        {
+            Console.WriteLine("Token:");
+            Console.WriteLine("Words: " + token.getToken());
+            Console.WriteLine("Token type: " +
+                            new TokenTypes().getTokenType(token.getTokenID())
+                            );
+            Console.WriteLine("Token id: " + token.getTokenID());
+        }
+
+        static void findValues(Token[] tokens)
+        {
+
+            foreach(Token token in tokens)
+            {
+                if (token.getTokenID() == new TokenTypes().Num)
+                {
+                    bool found = false;
+                    foreach(String val in lexer.getValues())
+                    {
+                        if (val.Equals(token.getToken()))
+                        {
+                            found = true; break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        lexer.addValue(token.getToken());
+                    }
+                }
+                else if(token.getTokenID() == new TokenTypes().Id)
+                {
+                    bool found = false;
+                    foreach (Char var in lexer.getUsedVarNames())
+                    {
+                        if (var == token.getToken()[0])
+                        {
+                            found = true; break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        lexer.addVarName(token.getToken()[0]);
+                    }
+                }
             }
         }
     }
@@ -89,13 +163,11 @@ namespace ConsoleProject
 
         public Token[] lex()
         {
-            //Token token = new Token(inputText);
-            //return token.tokenId;
             //1 Определить значение
+            //Определение токенов
             findString(inputText);
-            findNumbers(inputText);
-
-            findId(inputText);
+            //findNumbers(inputText);
+            //findId(inputText);
 
             List<String> cpValues = sortByLength(new List<String>(values));
             
@@ -103,8 +175,91 @@ namespace ConsoleProject
 
             List<Token> tokens = new List<Token>();
 
-            for (int i = 0; i < inputText.Length; i++)
+            String temp = "";
+            for(int i = 0; i < inputText.Length; i++)
             {
+                bool next = false;
+
+                //Check if string
+
+                for (int j = 0; j < cpValues.Count; j++)
+                {
+                    if (i + cpValues[j].Length <= inputText.Length)
+                    {
+                        if (inputText.Substring(i, cpValues[j].Length).Contains(cpValues[j]))
+                        {
+                            for (int d = 0; d < values.Count; d++)
+                            {
+                                if (cpValues[j].Equals(values[d]))
+                                {
+                                    tokens.Add(new Token(cpValues[j]));
+                                    break;
+                                }
+                            }
+                            i += cpValues[j].Length - 1;
+                            next = true;
+                            break;
+                        }
+                    }
+                }
+
+                //If found string, then continue
+                if (next)
+                {
+                    continue;
+                }
+
+                //Check if end of token
+                if (inputText[i] == ' ' || inputText[i] == '\r' || inputText[i] == '\n')
+                {
+                    if (temp != "" && temp != null)
+                    {
+                        tokens.Add(new Token(temp));
+                        temp = "";
+                    }
+                    continue;
+                }
+
+                //Check if delimiter
+                foreach(String del in delimiter)
+                {
+                    if (i + del.Length <= inputText.Length)
+                    {
+                        if (inputText.Substring(i, del.Length).Contains(del))
+                        {
+                            if (temp != "")
+                            {
+                                tokens.Add(new Token(temp));
+                                temp = "";
+                            }
+
+                            tokens.Add(new Token(del));
+                            i += del.Length - 1;
+
+                            next = true;
+
+                            break;
+                        }
+                    }
+                }
+
+                //If delimiter found, then continue
+                if (next)
+                {
+                    continue;
+                }
+
+                //Formation of token word
+                temp += inputText[i];
+            }
+
+
+            /*for (int i = 0; i < inputText.Length; i++)
+            {
+                if(inputText[i] == 32 || inputText[i] == '\r')
+                {
+                    continue;
+                }
                 Boolean cont = false;
                 //Check system words
                 for (int j = 0; j < systemWord.Length; j++)
@@ -157,7 +312,10 @@ namespace ConsoleProject
                         {
                             for (int d = 0; d < values.Count; d++)
                             {
-                                if (cpValues[j].Equals(values[d]))
+                                String test1 = cpValues[j];
+                                String test2 = values[d];
+                                //if (cpValues[j].Equals(values[d]))
+                                if(test1==test2)
                                 {
                                     tokens.Add(new Token(cpValues[j]));
                                     break;
@@ -186,15 +344,30 @@ namespace ConsoleProject
                     }
                 }
 
-                if (cont || inputText[i] == 32)
+                if (cont)
                 {
                     continue;
                 }
 
                 tokens.Add(new Token(Convert.ToString(inputText[i])));
-            }
+            }*/
 
             return tokens.ToArray();
+        }
+
+        public void addValue(String val)
+        {
+            values.Add(val);
+        }
+
+        public void addVarName(Char var)
+        {
+            varNames.Add(var);
+        }
+
+        public String[] getValues()
+        {
+            return values.ToArray();
         }
 
         public String[] getDelimiter()
@@ -217,69 +390,24 @@ namespace ConsoleProject
             return varNames.ToArray();
         }
 
-        private void findId(String input)
-        {
-            Boolean checkId = false;
-            foreach (String item in input.Split(' '))
-            {
-                if (checkId && item.Length == 1)
-                {
-                    for (int i = 0; i < id.Length; i++)
-                    {
-                        if (item[0] == id[i])
-                        {
-                            varNames.Add(id[i]);
-                            break;
-                        }
-                    }
-                }
-                else if (item == "int" || item == "bool" || item == "double" || item == "float" || item == "char")
-                {
-                    checkId = true;
-                }
-            }
-        }
-
-        private void findNumbers(String input)
-        {
-            String temp = "";
-            foreach (Char c in input)
-            {
-                int pos = (c - '0');
-                if (pos >= 0 && pos <= 9)
-                {
-                    temp += Convert.ToString(pos);
-                }
-                else if (c == '.')
-                {
-                    temp += c;
-                }
-                else
-                {
-                    foreach (String item in values)
-                    {
-                        if (temp == item)
-                        {
-                            temp = "";
-                            break;
-                        }
-                    }
-
-                    if (temp.Length > 0)
-                    {
-                        values.Add(temp);
-                        temp = "";
-                    }
-                }
-            }
-        }
-
         private void findString(String input)
         {
             String[] arr = input.Split('\"');
             for (int i = 1; i < arr.Length; i += 2)
             {
-                values.Add('"' + arr[i] + '"');
+                Boolean find = false;
+                foreach(String val in values)
+                {
+                    if(('\"' + arr[i] + '\"') == val)
+                    {
+                        find = true;
+                        break;
+                    }
+                }
+                if (!find)
+                {
+                    values.Add('\"' + arr[i] + '\"');
+                }
             }
         }
 
@@ -378,34 +506,42 @@ namespace ConsoleProject
         {
             get { return 5; }
         }
+        public byte String
+        {
+            get { return 6; }
+        }
         //Variable Name
         public byte Id
         {
-            get { return 6; }
+            get { return 7; }
         }
         //Block
         public byte Block
         {
-            get { return 7; }
+            get { return 8; }
         }
         //SystemWord
         public byte SysWord
         {
-            get { return 8; }
+            get { return 9; }
         }
         //Delimiters
         public byte Delimiter
         {
-            get { return 9; }
+            get { return 10; }
         }
         //NOP
         public byte NOP
         {
-            get { return 10; }
+            get { return 11; }
         }
 
         public Boolean isOperator(String s)
         {
+            if(s == null || s == "")
+            {
+                return false;
+            }
             if (isPlus(s[0]))
             {
                 return true;
@@ -483,6 +619,18 @@ namespace ConsoleProject
             return false;
         }
 
+        public Boolean isString(String s)
+        {
+            if (s.Length > 1)
+            {
+                if (s[0] == '"' && s[s.Length - 1] == '"')
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public byte getOperator(String s)
         {
             if (isPlus(s[0]))
@@ -546,6 +694,10 @@ namespace ConsoleProject
             {
                 return "DELIMITER";
             }
+            else if(tokenID == String)
+            {
+                return "STRING";
+            }
             else
             {
                 return "NOP";
@@ -571,8 +723,6 @@ namespace ConsoleProject
         {
             return input == '/' ? true : false;
         }
-
-
     }
 
     class Token
@@ -603,6 +753,10 @@ namespace ConsoleProject
             {
                 this.tokenId = tokenTypes.Delimiter;
             }
+            else if (tokenTypes.isString(this.token))
+            {
+                this.tokenId = tokenTypes.String;
+            }
             else
             {
                 this.tokenId = tokenTypes.NOP;
@@ -618,6 +772,7 @@ namespace ConsoleProject
         {
             return this.token;
         }
+
 
     }
 }
