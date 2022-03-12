@@ -10,22 +10,25 @@ namespace ConsoleProject
 
         static void Main(string[] args)
         {
+            //Get code for processing
             String input = File.ReadAllText("test.c");
             Console.WriteLine(input);
-
+            
+            //Spend lexical analysis
             lexer = new Lexer(input);
             Token[] tokens = lexer.lex();
 
             findValues(tokens);
 
+            //Output result of lexical analysis
             List<Token> errorToken = new List<Token>();
             int error = 0;
 
-            foreach(Token token in tokens)
+            foreach (Token token in tokens)
             {
                 printTokenInfo(token);
 
-                if(token.getTokenID() == new TokenTypes().NOP)
+                if (token.getTokenID() == new TokenTypes().NOP)
                 {
                     error++;
                     errorToken.Add(token);
@@ -34,19 +37,23 @@ namespace ConsoleProject
                 Console.WriteLine();
             }
 
-            if (error==0)
+            if (error == 0)
             {
                 Console.WriteLine("Ошибки не найдены");
             }
             else
             {
                 Console.WriteLine("==========================");
-                Console.WriteLine("Количество ошибок: "+error);
-                foreach(Token token in errorToken)
+                Console.WriteLine("Количество ошибок: " + error);
+                foreach (Token token in errorToken)
                 {
                     printTokenInfo(token);
                 }
             }
+
+            //Spend syntax analysis
+            Command[] AST = new Parser(tokens).parse();
+
         }
 
         static void printTokenInfo(Token token)
@@ -62,12 +69,12 @@ namespace ConsoleProject
         static void findValues(Token[] tokens)
         {
 
-            foreach(Token token in tokens)
+            foreach (Token token in tokens)
             {
                 if (token.getTokenID() == new TokenTypes().Num)
                 {
                     bool found = false;
-                    foreach(String val in lexer.getValues())
+                    foreach (String val in lexer.getValues())
                     {
                         if (val.Equals(token.getToken()))
                         {
@@ -79,7 +86,7 @@ namespace ConsoleProject
                         lexer.addValue(token.getToken());
                     }
                 }
-                else if(token.getTokenID() == new TokenTypes().Id)
+                else if (token.getTokenID() == new TokenTypes().Id)
                 {
                     bool found = false;
                     foreach (Char var in lexer.getUsedVarNames())
@@ -108,12 +115,12 @@ namespace ConsoleProject
         public Char[] getUsedVarNames();
     }
 
-    class Lexer: ILexer
+    class Lexer : ILexer
     {
         public String inputText;
 
-        private List <String> values;
-        private List <Char> varNames;
+        private List<String> values;
+        private List<Char> varNames;
 
         private String[] delimiter;
         private String id;
@@ -149,14 +156,14 @@ namespace ConsoleProject
                 ";", "==",">=",
                 "<=", "!=", "=",
                 ">", "<", "+",
-                "-", "*", "/", 
+                "-", "*", "/",
                 "\n", "(", ")",
                 ",", "{", "}",
                 "[", "]"
             };
         }
 
-        public Lexer(String input):this()
+        public Lexer(String input) : this()
         {
             inputText = deleteSuperfluousSpaces(deleteComments(input));
         }
@@ -170,13 +177,13 @@ namespace ConsoleProject
             //findId(inputText);
 
             List<String> cpValues = sortByLength(new List<String>(values));
-            
+
             //2 Получение токенов
 
             List<Token> tokens = new List<Token>();
 
             String temp = "";
-            for(int i = 0; i < inputText.Length; i++)
+            for (int i = 0; i < inputText.Length; i++)
             {
                 bool next = false;
 
@@ -221,7 +228,7 @@ namespace ConsoleProject
                 }
 
                 //Check if delimiter
-                foreach(String del in delimiter)
+                foreach (String del in delimiter)
                 {
                     if (i + del.Length <= inputText.Length)
                     {
@@ -253,104 +260,10 @@ namespace ConsoleProject
                 temp += inputText[i];
             }
 
-
-            /*for (int i = 0; i < inputText.Length; i++)
+            if(temp != null && temp != "")
             {
-                if(inputText[i] == 32 || inputText[i] == '\r')
-                {
-                    continue;
-                }
-                Boolean cont = false;
-                //Check system words
-                for (int j = 0; j < systemWord.Length; j++)
-                {
-                    if (i + systemWord[j].Length <= inputText.Length)
-                    {
-                        if (inputText.Substring(i, systemWord[j].Length).Contains(systemWord[j]))
-                        {
-                            tokens.Add(new Token(systemWord[j]));
-                            i += systemWord[j].Length - 1;
-                            cont = true;
-                            break;
-                        }
-                    }
-                }
-
-                //if find needed word - continue
-                if (cont)
-                {
-                    continue;
-                }
-
-                //Check delimiters
-                for (int j = 0; j < delimiter.Length; j++)
-                {
-
-                    if (i + delimiter[j].Length <= inputText.Length)
-                    {
-                        if (inputText.Substring(i, delimiter[j].Length).Contains(delimiter[j]))
-                        {
-                            tokens.Add(new Token(delimiter[j]));
-                            i += delimiter[j].Length - 1;
-                            cont = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (cont)
-                {
-                    continue;
-                }
-
-                //Check value
-                for (int j = 0; j < cpValues.Count; j++)
-                {
-                    if (i + cpValues[j].Length <= inputText.Length)
-                    {
-                        if (inputText.Substring(i, cpValues[j].Length).Contains(cpValues[j]))
-                        {
-                            for (int d = 0; d < values.Count; d++)
-                            {
-                                String test1 = cpValues[j];
-                                String test2 = values[d];
-                                //if (cpValues[j].Equals(values[d]))
-                                if(test1==test2)
-                                {
-                                    tokens.Add(new Token(cpValues[j]));
-                                    break;
-                                }
-                            }
-                            i += cpValues[j].Length - 1;
-                            cont = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (cont)
-                {
-                    continue;
-                }
-
-                //Check var names
-                for (int j = 0; j < varNames.Count; j++)
-                {
-                    if (inputText[i] == varNames[j])
-                    {
-                        tokens.Add(new Token(Convert.ToString(varNames[j])));
-                        cont = true;
-                        break;
-                    }
-                }
-
-                if (cont)
-                {
-                    continue;
-                }
-
-                tokens.Add(new Token(Convert.ToString(inputText[i])));
-            }*/
+                tokens.Add(new Token(temp));
+            }
 
             return tokens.ToArray();
         }
@@ -396,9 +309,9 @@ namespace ConsoleProject
             for (int i = 1; i < arr.Length; i += 2)
             {
                 Boolean find = false;
-                foreach(String val in values)
+                foreach (String val in values)
                 {
-                    if(('\"' + arr[i] + '\"') == val)
+                    if (('\"' + arr[i] + '\"') == val)
                     {
                         find = true;
                         break;
@@ -538,7 +451,7 @@ namespace ConsoleProject
 
         public Boolean isOperator(String s)
         {
-            if(s == null || s == "")
+            if (s == null || s == "")
             {
                 return false;
             }
@@ -597,7 +510,7 @@ namespace ConsoleProject
             {
                 foreach (Char name in new Lexer().getVarNames())
                 {
-                    if(s[0] == name)
+                    if (s[0] == name)
                     {
                         return true;
                     }
@@ -608,9 +521,9 @@ namespace ConsoleProject
 
         public Boolean isDelimiter(String s)
         {
-            foreach(String del in new Lexer().getDelimiter())
+            foreach (String del in new Lexer().getDelimiter())
             {
-                if(s == del)
+                if (s == del)
                 {
                     return true;
                 }
@@ -666,35 +579,35 @@ namespace ConsoleProject
             {
                 return "DIVISION";
             }
-            else if(tokenID == Mul)
+            else if (tokenID == Mul)
             {
                 return "MULTIPLICATE";
             }
-            else if(tokenID == Logical)
+            else if (tokenID == Logical)
             {
                 return "LOGICAL";
             }
-            else if(tokenID == Num)
+            else if (tokenID == Num)
             {
                 return "NUMBER";
             }
-            else if(tokenID == Block)
+            else if (tokenID == Block)
             {
                 return "BLOCK";
             }
-            else if(tokenID == Id)
+            else if (tokenID == Id)
             {
                 return "VARNAME";
             }
-            else if(tokenID == SysWord)
+            else if (tokenID == SysWord)
             {
                 return "SYSTEM WORD";
             }
-            else if(tokenID == Delimiter)
+            else if (tokenID == Delimiter)
             {
                 return "DELIMITER";
             }
-            else if(tokenID == String)
+            else if (tokenID == String)
             {
                 return "STRING";
             }
@@ -706,7 +619,7 @@ namespace ConsoleProject
 
         public Boolean isPlus(char input)
         {
-            return input == '+' ?  true : false;
+            return input == '+' ? true : false;
         }
 
         public Boolean isMinus(char input)
@@ -725,7 +638,7 @@ namespace ConsoleProject
         }
     }
 
-    class Token
+    class Token:TokenTypes
     {
         private String token;
         public byte tokenId;
@@ -734,7 +647,7 @@ namespace ConsoleProject
         {
             this.token = token;
             TokenTypes tokenTypes = new TokenTypes();
-            if(tokenTypes.isOperator(this.token))
+            if (tokenTypes.isOperator(this.token))
             {
                 this.tokenId = tokenTypes.getOperator(this.token);
             }
@@ -742,7 +655,8 @@ namespace ConsoleProject
             {
                 this.tokenId = tokenTypes.Num;
             }
-            else if (tokenTypes.isSystemWord(this.token)){
+            else if (tokenTypes.isSystemWord(this.token))
+            {
                 this.tokenId = tokenTypes.SysWord;
             }
             else if (tokenTypes.isVarName(this.token))
@@ -774,5 +688,142 @@ namespace ConsoleProject
         }
 
 
+    }
+
+    class Parser
+    {
+        private Token[] tokens;
+
+        public Parser(Token[] tokens)
+        {
+            this.tokens = tokens;
+        }
+        
+        public Command[] parse()
+        {
+            List<Command> commands = new List<Command>();
+
+            Command command;
+            //Processing 
+            foreach(Token token in this.tokens)
+            {
+
+            }
+
+            return commands.ToArray();
+        }
+    }
+
+    class Command
+    {
+        private Object val1, val2;
+        private Token operation;
+
+        public Command()
+        {
+
+        }
+
+        public bool addFirstVal(Token value)
+        {
+            if (value.getTokenID() == new TokenTypes().Id || 
+                value.getTokenID() == new TokenTypes().Num)
+            {
+                val1 = value;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool addFirstVal(Command value)
+        {
+            try
+            {
+                val1 = value;
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return false;
+        }
+
+
+        public bool addOperator(Token operation)
+        {
+            if (operation.isOperator(operation.getToken()))
+            {
+                this.operation = operation;
+                return true;
+            }
+            return false;
+        }
+
+
+        public bool addSecondVal(Token value)
+        {
+            if (value.getTokenID() == new TokenTypes().Id ||
+                value.getTokenID() == new TokenTypes().Num)
+            {
+                val2 = value;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool addSecondVal(Command value)
+        {
+            try
+            {
+                val2 = value;
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return false;
+        }
+
+        public bool addVal(Token value)
+        {
+            if(val1 == null)
+            {
+                if (addFirstVal(value))
+                {
+                    return true;
+                }
+                else { return false; }
+            }
+            
+            if(val2 == null)
+            {
+                if (addSecondVal(value)) { return true; }
+                else { return false; }
+            }
+
+            return false;
+        }
+
+        public bool isFirstVal()
+        {
+            if(val1 != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool isSecondVal()
+        {
+            if (val2 != null)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
