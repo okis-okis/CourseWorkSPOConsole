@@ -13,7 +13,7 @@ namespace ConsoleProject
             //Get code for processing
             String input = File.ReadAllText("test.c");
             Console.WriteLine(input);
-            
+
             //Spend lexical analysis
             lexer = new Lexer(input);
             Token[] tokens = lexer.lex();
@@ -23,7 +23,7 @@ namespace ConsoleProject
             //Output result of lexical analysis
             List<Token> errorToken = new List<Token>();
             int error = 0;
-
+            
             foreach (Token token in tokens)
             {
                 printTokenInfo(token);
@@ -39,7 +39,13 @@ namespace ConsoleProject
 
             if (error == 0)
             {
-                Console.WriteLine("Ошибки не найдены");
+                Console.WriteLine("Лексические ошибки не найдены");
+
+                int result = new Parser(tokens).parse();
+
+                //Spend syntax analysis
+                Console.WriteLine("Result is: " + result);
+                
             }
             else
             {
@@ -50,9 +56,6 @@ namespace ConsoleProject
                     printTokenInfo(token);
                 }
             }
-
-            //Spend syntax analysis
-            Command[] AST = new Parser(tokens).parse();
 
         }
 
@@ -451,7 +454,7 @@ namespace ConsoleProject
 
         public Boolean isOperator(String s)
         {
-            if (s == null || s == "")
+            if (s == null || s == "" || s.Length>1)
             {
                 return false;
             }
@@ -638,7 +641,7 @@ namespace ConsoleProject
         }
     }
 
-    class Token:TokenTypes
+    class Token
     {
         private String token;
         public byte tokenId;
@@ -687,36 +690,253 @@ namespace ConsoleProject
             return this.token;
         }
 
+        public bool isOperator()
+        {
+            if(new TokenTypes().isOperator(this.token))
+            {
+                return true;
+            }
+            return false;
+        }
 
+        public bool isPlus()
+        {
+            if(this.token.Length > 1)
+            {
+                return false;
+            }
+            if (new TokenTypes().isPlus(this.token[0]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool isMinus()
+        {
+            if (this.token.Length > 1)
+            {
+                return false;
+            }
+            if (new TokenTypes().isMinus(this.token[0]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool isMul()
+        {
+            if (this.token.Length > 1)
+            {
+                return false;
+            }
+            if (new TokenTypes().isMul(this.token[0]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool isDiv()
+        {
+            if (this.token.Length > 1)
+            {
+                return false;
+            }
+            if (new TokenTypes().isDiv(this.token[0]))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
     class Parser
     {
+        private int tokenPos = 0;
         private Token[] tokens;
+
 
         public Parser(Token[] tokens)
         {
             this.tokens = tokens;
         }
-        
-        public Command[] parse()
+
+        private void Error()
         {
-            List<Command> commands = new List<Command>();
-
-            Command command;
-            //Processing 
-            foreach(Token token in this.tokens)
-            {
-
-            }
-
-            return commands.ToArray();
+            Console.Error.WriteLine("Error!");
+            Environment.Exit(2);
         }
+
+        private Token eat(Token token, int type)
+        {
+            if(token.getTokenID() == type)
+            {
+                return token;
+            }
+            Error();
+            return null;
+        }
+
+        private Token currentToken()
+        {
+            if(tokenPos < tokens.Length)
+            {
+                return tokens[tokenPos];
+            }
+            return null;
+        }
+
+        private Token getNextToken()
+        {
+            if (tokenPos+1 < tokens.Length)
+            {
+                tokenPos++;
+                return tokens[tokenPos];
+            }
+            return null;
+        }
+
+        private Token factor() {
+            Token token = currentToken();
+
+            if (token.getTokenID() == new TokenTypes().Num)
+            {
+                return token;
+            }
+            else if (token.getTokenID() == new TokenTypes().Delimiter)
+            {
+                if (token.getToken().Length == 1 && token.getToken()[0] == '(')
+                {
+                    getNextToken();
+                    token = expr();
+                    if(getNextToken().getToken().Length == 1 && currentToken().getToken()[0] == ')')
+                    {
+                        return token;
+                    }
+                }
+            }
+            Error();
+            return null;
+        }
+
+        private Token term()
+        {
+            Token result = factor();
+
+            while (nextToken() != null && 
+                 (nextToken().getTokenID() == new TokenTypes().Mul ||
+                  nextToken().getTokenID() == new TokenTypes().Div))
+            {
+                getNextToken();
+                if (currentToken().getTokenID() == new TokenTypes().Mul)
+                {
+                    step();
+                    result = new Token(Convert.ToString(
+                        Convert.ToInt32(result.getToken()) *
+                        Convert.ToInt32(factor().getToken())
+                        ));
+                }
+                else if (currentToken().getTokenID() == new TokenTypes().Div)
+                {
+                    step();
+                    result = new Token(Convert.ToString(
+                        Convert.ToInt32(result.getToken()) /
+                        Convert.ToInt32(factor().getToken())
+                        ));
+                }
+            }
+            return result;
+        }
+
+        private Token nextToken()
+        {
+            if (tokenPos + 1 < tokens.Length)
+            {
+                return tokens[tokenPos+1];
+            }
+            return null;
+        }
+
+        private Token expr()
+        {
+            Token result = term();
+            
+            while(nextToken() != null && 
+                  (nextToken().getTokenID() == new TokenTypes().Plus ||
+                  nextToken().getTokenID() == new TokenTypes().Minus))
+            {
+                getNextToken();
+                if (currentToken().getTokenID() == new TokenTypes().Plus)
+                {
+                    step();
+                    result = new Token(Convert.ToString(
+                        Convert.ToInt32(result.getToken())+
+                        Convert.ToInt32(term().getToken())
+                        ));
+                }
+                else if (currentToken().getTokenID() == new TokenTypes().Minus)
+                {
+                    step();
+                    result = new Token(Convert.ToString(
+                        Convert.ToInt32(result.getToken()) -
+                        Convert.ToInt32(term().getToken())
+                        ));
+                }
+            }
+            return result;
+        }
+
+        private void step()
+        {
+            if (getNextToken() == null)
+            {
+                Error();
+            }
+        }
+        public int parse()
+        {
+            return Convert.ToInt32(expr().getToken());
+        }
+
+        /*public int parse()
+        {
+            Command command = new Command();
+
+            foreach (Token token in this.tokens)
+            {
+                if (new TokenTypes().Num == token.getTokenID())
+                {
+                    command.addVal(token);
+                }
+                else if (token.isOperator())
+                {
+                    if (!command.isFirstVal())
+                    {
+                        command.addVal(new Token("0"));
+                    }
+                    command.addOperator(token);
+                }
+                if (command.isFull())
+                {
+                    Token newToken = new Token(Convert.ToString(command.exec()));
+                    //command = new Command();
+                    command.addVal(newToken);
+                }
+            }
+            return command.exec();
+        }*/
+
+
+
     }
 
-    class Command
+
+
+    /*class Command
     {
-        private Object val1, val2;
+        private Token val1, val2;
         private Token operation;
 
         public Command()
@@ -735,8 +955,8 @@ namespace ConsoleProject
 
             return false;
         }
-
-        public bool addFirstVal(Command value)
+        
+        /*public bool addFirstVal(Command value)
         {
             try
             {
@@ -749,11 +969,11 @@ namespace ConsoleProject
             }
             return false;
         }
-
+        
 
         public bool addOperator(Token operation)
         {
-            if (operation.isOperator(operation.getToken()))
+            if (operation.isOperator())
             {
                 this.operation = operation;
                 return true;
@@ -773,8 +993,8 @@ namespace ConsoleProject
 
             return false;
         }
-
-        public bool addSecondVal(Command value)
+        
+        /*public bool addSecondVal(Command value)
         {
             try
             {
@@ -787,6 +1007,7 @@ namespace ConsoleProject
             }
             return false;
         }
+
 
         public bool addVal(Token value)
         {
@@ -808,6 +1029,7 @@ namespace ConsoleProject
             return false;
         }
 
+
         public bool isFirstVal()
         {
             if(val1 != null)
@@ -825,5 +1047,61 @@ namespace ConsoleProject
             }
             return false;
         }
-    }
+
+        public bool isOperator()
+        {
+            if (this.operation!=null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool isFull()
+        {
+            if(isFirstVal() && isOperator() && isSecondVal())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public int exec()
+        {
+            int result = Convert.ToInt32(val1.getToken());
+            if (isOperator())
+            {
+                if (isSecondVal())
+                {
+                    if (operation.isPlus())
+                    {
+                        result += Convert.ToInt32(val2.getToken());
+                    }
+                    else if (operation.isMinus())
+                    {
+                        result -= Convert.ToInt32(val2.getToken());
+                    }
+                    else if (operation.isMul())
+                    {
+                        result *= Convert.ToInt32(val2.getToken());
+                    }
+                    else if (operation.isDiv())
+                    {
+                        result /= Convert.ToInt32(val2.getToken());
+                    }
+                    else
+                    {
+                        Console.Error.WriteLine("Operation not define!");
+                        Environment.Exit(2);
+                    }
+                }
+                else
+                {
+                    Console.Error.WriteLine("Not found second value!");
+                    Environment.Exit(2);
+                }
+            }
+            return result;
+        }
+    }*/
 }
