@@ -41,11 +41,12 @@ namespace ConsoleProject
             {
                 Console.WriteLine("Лексические ошибки не найдены");
 
-                int result = new Parser(tokens).parse();
-
-                //Spend syntax analysis
-                Console.WriteLine("Result is: " + result);
+                Node node = new Parser(tokens).parse();
+                Interpreter interpreter = new Interpreter(node);
                 
+                //Spend syntax analysis
+                Console.WriteLine("Result is: " + interpreter.interpret());
+
             }
             else
             {
@@ -107,6 +108,10 @@ namespace ConsoleProject
             }
         }
     }
+
+    //###################################//
+    //          PARSER                   //
+    //###################################//
 
     interface ILexer
     {
@@ -798,22 +803,22 @@ namespace ConsoleProject
             return null;
         }
 
-        private Token factor() {
+        private Node factor() {
             Token token = currentToken();
 
             if (token.getTokenID() == new TokenTypes().Num)
             {
-                return token;
+                return new Node(token);
             }
             else if (token.getTokenID() == new TokenTypes().Delimiter)
             {
                 if (token.getToken().Length == 1 && token.getToken()[0] == '(')
                 {
                     getNextToken();
-                    token = expr();
+                    Node n = expr();
                     if(getNextToken().getToken().Length == 1 && currentToken().getToken()[0] == ')')
                     {
-                        return token;
+                        return n;
                     }
                 }
             }
@@ -821,18 +826,22 @@ namespace ConsoleProject
             return null;
         }
 
-        private Token term()
+        private Node term()
         {
-            Token result = factor();
+            Node result = factor();
 
             while (nextToken() != null && 
                  (nextToken().getTokenID() == new TokenTypes().Mul ||
                   nextToken().getTokenID() == new TokenTypes().Div))
             {
-                getNextToken();
-                if (currentToken().getTokenID() == new TokenTypes().Mul)
+                step();
+                result = new Node(result, new Node(currentToken()), new Node());
+                step();
+                result.setRight(factor());
+
+                /*if (currentToken().getTokenID() == new TokenTypes().Mul)
                 {
-                    step();
+                    
                     result = new Token(Convert.ToString(
                         Convert.ToInt32(result.getToken()) *
                         Convert.ToInt32(factor().getToken())
@@ -845,7 +854,7 @@ namespace ConsoleProject
                         Convert.ToInt32(result.getToken()) /
                         Convert.ToInt32(factor().getToken())
                         ));
-                }
+                }*/
             }
             return result;
         }
@@ -859,31 +868,18 @@ namespace ConsoleProject
             return null;
         }
 
-        private Token expr()
+        private Node expr()
         {
-            Token result = term();
+            Node result = term();
             
             while(nextToken() != null && 
                   (nextToken().getTokenID() == new TokenTypes().Plus ||
                   nextToken().getTokenID() == new TokenTypes().Minus))
             {
-                getNextToken();
-                if (currentToken().getTokenID() == new TokenTypes().Plus)
-                {
-                    step();
-                    result = new Token(Convert.ToString(
-                        Convert.ToInt32(result.getToken())+
-                        Convert.ToInt32(term().getToken())
-                        ));
-                }
-                else if (currentToken().getTokenID() == new TokenTypes().Minus)
-                {
-                    step();
-                    result = new Token(Convert.ToString(
-                        Convert.ToInt32(result.getToken()) -
-                        Convert.ToInt32(term().getToken())
-                        ));
-                }
+                step();
+                result = new Node(result, new Node(currentToken()), new Node());
+                step();
+                result.setRight(term());
             }
             return result;
         }
@@ -895,213 +891,132 @@ namespace ConsoleProject
                 Error();
             }
         }
-        public int parse()
+        public Node parse()
         {
-            return Convert.ToInt32(expr().getToken());
+            return expr();
         }
-
-        /*public int parse()
-        {
-            Command command = new Command();
-
-            foreach (Token token in this.tokens)
-            {
-                if (new TokenTypes().Num == token.getTokenID())
-                {
-                    command.addVal(token);
-                }
-                else if (token.isOperator())
-                {
-                    if (!command.isFirstVal())
-                    {
-                        command.addVal(new Token("0"));
-                    }
-                    command.addOperator(token);
-                }
-                if (command.isFull())
-                {
-                    Token newToken = new Token(Convert.ToString(command.exec()));
-                    //command = new Command();
-                    command.addVal(newToken);
-                }
-            }
-            return command.exec();
-        }*/
-
-
-
     }
 
-
-
-    /*class Command
+    class Node
     {
-        private Token val1, val2;
-        private Token operation;
+        private bool num;
+        Node left, right, op;
+        private string value;
 
-        public Command()
+        public Node()
         {
 
         }
 
-        public bool addFirstVal(Token value)
+        public Node(Token token)
         {
-            if (value.getTokenID() == new TokenTypes().Id || 
-                value.getTokenID() == new TokenTypes().Num)
+            num = true;
+            if(token.getTokenID() == new TokenTypes().Num ||
+               new TokenTypes().isOperator(token.getToken()))
             {
-                val1 = value;
-                return true;
+                value = token.getToken();
             }
-
-            return false;
-        }
-        
-        /*public bool addFirstVal(Command value)
-        {
-            try
+            else
             {
-                val1 = value;
-                return true;
+                Error();
             }
-            catch (Exception ex)
-            {
-
-            }
-            return false;
-        }
-        
-
-        public bool addOperator(Token operation)
-        {
-            if (operation.isOperator())
-            {
-                this.operation = operation;
-                return true;
-            }
-            return false;
         }
 
-
-        public bool addSecondVal(Token value)
+        public Node(Node left, Node op, Node right)
         {
-            if (value.getTokenID() == new TokenTypes().Id ||
-                value.getTokenID() == new TokenTypes().Num)
-            {
-                val2 = value;
-                return true;
-            }
-
-            return false;
-        }
-        
-        /*public bool addSecondVal(Command value)
-        {
-            try
-            {
-                val2 = value;
-                return true;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return false;
+            num = false;
+            this.left = left;
+            this.right = right;
+            this.op = op;
         }
 
-
-        public bool addVal(Token value)
+        public Node getLeft()
         {
-            if(val1 == null)
-            {
-                if (addFirstVal(value))
-                {
-                    return true;
-                }
-                else { return false; }
-            }
-            
-            if(val2 == null)
-            {
-                if (addSecondVal(value)) { return true; }
-                else { return false; }
-            }
-
-            return false;
+            return left;
         }
 
-
-        public bool isFirstVal()
+        public Node getOp()
         {
-            if(val1 != null)
-            {
-                return true;
-            }
-            return false;
+            return op;
         }
 
-        public bool isSecondVal()
+        public Node getRight()
         {
-            if (val2 != null)
-            {
-                return true;
-            }
-            return false;
+            return right;
         }
 
-        public bool isOperator()
+        public String getValue()
         {
-            if (this.operation!=null)
-            {
-                return true;
-            }
-            return false;
+            return value;
         }
 
-        public bool isFull()
+        public void setRight(Node right)
         {
-            if(isFirstVal() && isOperator() && isSecondVal())
-            {
-                return true;
-            }
-            return false;
+            this.right = right;
         }
 
-        public int exec()
+        public bool isNode()
         {
-            int result = Convert.ToInt32(val1.getToken());
-            if (isOperator())
-            {
-                if (isSecondVal())
-                {
-                    if (operation.isPlus())
-                    {
-                        result += Convert.ToInt32(val2.getToken());
-                    }
-                    else if (operation.isMinus())
-                    {
-                        result -= Convert.ToInt32(val2.getToken());
-                    }
-                    else if (operation.isMul())
-                    {
-                        result *= Convert.ToInt32(val2.getToken());
-                    }
-                    else if (operation.isDiv())
-                    {
-                        result /= Convert.ToInt32(val2.getToken());
-                    }
-                    else
-                    {
-                        Console.Error.WriteLine("Operation not define!");
-                        Environment.Exit(2);
-                    }
-                }
-                else
-                {
-                    Console.Error.WriteLine("Not found second value!");
-                    Environment.Exit(2);
-                }
-            }
-            return result;
+            return !num;
         }
-    }*/
+
+        public bool isToken()
+        {
+            return num;
+        }
+
+        private void Error()
+        {
+            Console.Error.WriteLine("Node Error!");
+            Environment.Exit(2);
+        }
+    }
+
+    //###################################//
+    //          INTEPRETER               //
+    //###################################//
+
+    class Interpreter
+    {
+        Node node;
+        public Interpreter(Node node)
+        {
+            this.node = node;
+        }
+
+        public int interpret()
+        {
+            return visit(node);
+        }
+
+        private int visit(Node node)
+        {
+            if (node.isToken())
+            {
+                return Convert.ToInt32(node.getValue());
+            }
+
+            if (node.getOp().getValue() == "+")
+            {
+                return visit(node.getLeft()) + visit(node.getRight());
+            }
+            else if (node.getOp().getValue() == "-")
+            {
+                return visit(node.getLeft()) - visit(node.getRight());
+            }
+            else if (node.getOp().getValue() == "*")
+            {
+                return visit(node.getLeft()) * visit(node.getRight());
+            }
+            else if (node.getOp().getValue() == "/")
+            {
+                return visit(node.getLeft()) / visit(node.getRight());
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    }
+
 }
