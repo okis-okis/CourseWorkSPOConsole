@@ -43,10 +43,10 @@ namespace ConsoleProject
 
                 //PARSER
                 Node AST = new Parser(tokens).parse();
-                Interpreter interpreter = new Interpreter(AST);
-                
+                //Interpreter interpreter = new Interpreter(AST);
+                Console.WriteLine("Work!");
                 //Spend syntax analysis
-                Console.WriteLine("Result is: " + interpreter.interpret());
+                //Console.WriteLine("Result is: " + interpreter.interpret());
 
             }
             else

@@ -6,32 +6,39 @@ namespace ConsoleProject
 {
     class Node
     {
-        private bool num;
+        private bool end;
+        private bool list;
+
         Node left, right, op;
+        Node[] compound;
+
+
         private string value;
 
         public Node()
         {
-
+            list = false;
         }
 
-        public Node(Token token)
+        public Node(Token token):this()
         {
-            num = true;
-            if (token.getTokenID() == new TokenTypes().Num ||
-               new TokenTypes().isOperator(token.getToken()))
-            {
-                value = token.getToken();
-            }
-            else
+            end = true;
+            if(token.getTokenID() == new TokenTypes().NOP)
             {
                 Error();
             }
+            value = token.getToken();
+        }
+
+        public Node(Node[] nodes)
+        {
+            compound = nodes;
+            list = true;
         }
 
         public Node(Node left, Node op, Node right)
         {
-            num = false;
+            end = false;
             this.left = left;
             this.right = right;
             this.op = op;
@@ -64,12 +71,22 @@ namespace ConsoleProject
 
         public bool isNode()
         {
-            return !num;
+            return !end;
         }
 
         public bool isToken()
         {
-            return num;
+            return end;
+        }
+
+        public bool isCompound()
+        {
+            return list;
+        }
+
+        public Node[] getNodes()
+        {
+            return compound;
         }
 
         private void Error()

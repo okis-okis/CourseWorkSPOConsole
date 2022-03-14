@@ -41,25 +41,20 @@ namespace ConsoleProject
         {
             get { return 7; }
         }
-        //Block
-        public byte Block
-        {
-            get { return 8; }
-        }
         //SystemWord
         public byte SysWord
         {
-            get { return 9; }
+            get { return 8; }
         }
         //Delimiters
         public byte Delimiter
         {
-            get { return 10; }
+            get { return 9; }
         }
         //NOP
         public byte NOP
         {
-            get { return 11; }
+            get { return 10; }
         }
 
         public Boolean isOperator(String s)
@@ -203,10 +198,6 @@ namespace ConsoleProject
             else if (tokenID == Num)
             {
                 return "NUMBER";
-            }
-            else if (tokenID == Block)
-            {
-                return "BLOCK";
             }
             else if (tokenID == Id)
             {
