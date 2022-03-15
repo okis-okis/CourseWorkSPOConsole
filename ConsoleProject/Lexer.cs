@@ -229,7 +229,11 @@ namespace ConsoleProject
             int count = 0;
             foreach (Char c in input)
             {
-                if (c == ' ')
+                if (c == '\t')
+                {
+                    continue;
+                }
+                else if (c == ' ')
                 {
                     if (count == 0)
                     {

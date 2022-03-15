@@ -8,11 +8,12 @@ namespace ConsoleProject
     {
         private int tokenPos = 0;
         private Token[] tokens;
-
+        private List<String[]> varDeclaration;
 
         public Parser(Token[] tokens)
         {
             this.tokens = tokens;
+            varDeclaration = new List<String[]>();
         }
 
         private void Error()
@@ -131,7 +132,25 @@ namespace ConsoleProject
         {
             if (currentToken().isDataType())
             {
+                //Variable declaration;
+                String type = currentToken().getToken();
                 step();
+                if(currentToken().getTokenID() == new TokenTypes().Id)
+                {
+                    String id = currentToken().getToken();
+                    foreach (String[] str in varDeclaration.ToArray())
+                    {
+                        if(str[1] == id)
+                        {
+                            Error();
+                        }
+                    }
+                    varDeclaration.Add(new String[] {type, id});
+                }
+                else
+                {
+                    Error();
+                }
             }
 
             Token token = currentToken();
@@ -149,11 +168,16 @@ namespace ConsoleProject
             Node left = variable();
             Node op = null;
             step();
-            if(currentToken().getTokenID() == new TokenTypes().Delimiter && 
-                currentToken().getToken().Length == 1 && 
+            if (currentToken().getTokenID() == new TokenTypes().Delimiter &&
+                currentToken().getToken().Length == 1 &&
                 currentToken().getToken()[0] == '=')
             {
                 op = new Node(currentToken());
+            }
+            else if (currentToken().getTokenID() == new TokenTypes().Delimiter &&
+                    currentToken().getToken() == ";")
+            {
+                return left;
             }
             else
             {
@@ -170,7 +194,7 @@ namespace ConsoleProject
 
         private Node statement()
         {
-            if (currentToken().isDataType())
+            if (currentToken().isDataType() || currentToken().getTokenID() == new TokenTypes().Id)
             {
                 return assignState();
             }
@@ -185,7 +209,12 @@ namespace ConsoleProject
         {
             List<Node> list = new List<Node> ();
             list.Add(statement());
-            step();
+            
+            if (currentToken().getToken() != "return" && currentToken().getToken() != ";")
+            {
+                step();
+            }
+
             while (currentToken().getToken() == ";" || (previousToken() != null && previousToken().getToken() == "}"))
             {
                 if(nextToken() == null || nextToken().getToken() == "}" || nextToken().getToken() == "return")
@@ -283,7 +312,10 @@ namespace ConsoleProject
             }
 
             list.Add(compound());
-            step();
+            if (currentToken().getToken() != "return")
+            {
+                step();
+            }
 
             if (currentToken().getTokenID() == new TokenTypes().SysWord && currentToken().getToken() == "return")
             {
@@ -339,6 +371,11 @@ namespace ConsoleProject
             return null;
         }
 
+        public String[][] getVarArray()
+        {
+            return varDeclaration.ToArray();
+        }
+
         private Token currentToken()
         {
             if (tokenPos < tokens.Length)
@@ -378,6 +415,15 @@ namespace ConsoleProject
         public Node parse()
         {
             return program();
+        }
+
+        public void outputVar()
+        {
+            Console.WriteLine("Declaration var: ");
+            foreach (String[] var in varDeclaration.ToArray())
+            {
+                Console.WriteLine("Var: "+var[0]+" "+var[1]);
+            }
         }
     }
 }

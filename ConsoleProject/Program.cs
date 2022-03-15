@@ -42,10 +42,17 @@ namespace ConsoleProject
                 Console.WriteLine("Лексические ошибки не найдены");
 
                 //PARSER
-                Node AST = new Parser(tokens).parse();
+                Parser parser = new Parser(tokens);
+                Node AST = parser.parse();
+                parser.outputVar();
+
                 //Interpreter interpreter = new Interpreter(AST);
                 Console.WriteLine("Work!");
                 //Spend syntax analysis
+
+                Interpreter interpreter = new Interpreter(AST);
+                interpreter.interpret(parser.getVarArray());
+
                 //Console.WriteLine("Result is: " + interpreter.interpret());
 
             }
@@ -113,48 +120,5 @@ namespace ConsoleProject
     //###################################//
     //          INTEPRETER               //
     //###################################//
-
-    class Interpreter
-    {
-        Node node;
-        public Interpreter(Node node)
-        {
-            this.node = node;
-        }
-
-        public int interpret()
-        {
-            return visit(node);
-        }
-
-        private int visit(Node node)
-        {
-            if (node.isToken())
-            {
-                return Convert.ToInt32(node.getValue());
-            }
-
-            if (node.getOp().getValue() == "+")
-            {
-                return visit(node.getLeft()) + visit(node.getRight());
-            }
-            else if (node.getOp().getValue() == "-")
-            {
-                return visit(node.getLeft()) - visit(node.getRight());
-            }
-            else if (node.getOp().getValue() == "*")
-            {
-                return visit(node.getLeft()) * visit(node.getRight());
-            }
-            else if (node.getOp().getValue() == "/")
-            {
-                return visit(node.getLeft()) / visit(node.getRight());
-            }
-            else
-            {
-                return 0;
-            }
-        }
-    }
 
 }

@@ -62,6 +62,18 @@ namespace ConsoleProject
             return false;
         }
 
+        public bool isDataType()
+        {
+            if (tokenId == new TokenTypes().SysWord)
+            {
+                if (token == "int" || token == "float" || token == "char" || token == "double")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public bool isPlus()
         {
             if (this.token.Length > 1)
