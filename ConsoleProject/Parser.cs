@@ -269,8 +269,10 @@ namespace ConsoleProject
             {
                 Error();
             }
-            list.Add(dataType());
+            
+            dataType();
             step();
+
             if(currentToken().getTokenID() == new TokenTypes().SysWord && currentToken().getToken() == "main")
             {
                 list.Add(new Node(currentToken()));
@@ -283,7 +285,7 @@ namespace ConsoleProject
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == "(")
             {
-                list.Add(new Node(currentToken()));
+                //list.Add(new Node(currentToken()));
                 step();
             }
             else
@@ -293,7 +295,7 @@ namespace ConsoleProject
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == ")")
             {
-                list.Add(new Node(currentToken()));
+                //list.Add(new Node(currentToken()));
                 step();
             }
             else
@@ -303,7 +305,7 @@ namespace ConsoleProject
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == "{")
             {
-                list.Add(new Node(currentToken()));
+                //list.Add(new Node(currentToken()));
                 step();
             }
             else
@@ -327,12 +329,12 @@ namespace ConsoleProject
                 Error();
             }
 
-            list.Add(factor());
+            factor();
             step();
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == ";")
             {
-                list.Add(new Node(currentToken()));
+                //list.Add(new Node(currentToken()));
                 step();
             }
             else
@@ -342,7 +344,7 @@ namespace ConsoleProject
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == "}")
             {
-                list.Add(new Node(currentToken()));
+                //list.Add(new Node(currentToken()));
             }
             else
             {

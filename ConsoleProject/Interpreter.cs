@@ -32,9 +32,117 @@ namespace ConsoleProject
             }
         }
 
-        public void interpretCode()
+        private bool isMain(Node n)
         {
+            if(n.isToken() && n.getValue() == "main")
+            {
+                return true;
+            }
+            return false;
+        }
 
+        private void addMain()
+        {
+            codeAdd("section .text");
+            codeAdd("global CMAIN");
+            codeAdd("CMAIN:");
+        }
+
+        private bool isReturn(Node n)
+        {
+            if (n.isToken() && n.getValue() == "return")
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void addReturn()
+        {
+            codeAdd("ret");
+        }
+
+        public String getVal(Node n)
+        {
+            if(n.getValue() != null && 
+                new Token(n.getValue()).getTokenID() == new TokenTypes().Id)
+            {
+                return "["+ n.getValue() + "]";
+            }
+            else if (n.isNode())
+            {
+                interpretCode(n);
+            }
+            return n.getValue();
+        }
+
+        public void interpretCode(Node node)
+        {
+            if (node.isCompound())
+            {
+                foreach(Node n in node.getNodes()){
+                    interpretCode(n);
+                }
+            }
+            else if (node.isNode())
+            {
+                if(node.getOp()!= null)
+                {
+                    if(node.getOp().getValue() == "=")
+                    {
+                        string sr = getVal(node.getRight());
+                        if(sr != null)
+                        {
+                            codeAdd("mov " + getVal(node.getLeft()) + ", " + sr);
+                        }
+                        else
+                        {
+                            codeAdd("mov " + getVal(node.getLeft()) + ", eax");
+                        }
+                    }
+                    else if (node.getOp().getValue() == "+" ||
+                            node.getOp().getValue() == "-")
+                    {
+                        string sr = getVal(node.getRight());
+                        string sl = getVal(node.getLeft());
+                        if (sr != null)
+                        {
+                            codeAdd("mov ebx, " + sr);
+                        }
+                        if (sl != null)
+                        {
+                            codeAdd("mov eax, " + sl);
+                        }
+                        if (node.getOp().getValue() == "+")
+                        {
+                            codeAdd("add eax, ebx");
+                        }
+                        else
+                        {
+                            codeAdd("sub eax, ebx");
+                        }
+                    }
+                }
+            }
+            else if (node.isToken())
+            {
+                if (isMain(node))
+                {
+                    addMain();
+                }
+                else if (isReturn(node))
+                {
+                    addReturn();
+                }
+                else if(new Token(node.getValue()).getTokenID() == new TokenTypes().Num)
+                {
+                    codeAdd(node.getValue());
+                }
+            }
+            else
+            {
+
+            }
         }
 
         public void interpret(String[][] vars)
@@ -43,7 +151,7 @@ namespace ConsoleProject
             varDeclaration(vars);
 
             //code description
-            interpretCode();
+            interpretCode(node);
 
             try
             {
