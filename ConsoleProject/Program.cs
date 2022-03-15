@@ -47,7 +47,8 @@ namespace ConsoleProject
                 parser.outputVar();
 
                 //Interpreter interpreter = new Interpreter(AST);
-                Console.WriteLine("Work!");
+                Console.WriteLine("Interpreter");
+                Console.WriteLine();
                 //Spend syntax analysis
 
                 Interpreter interpreter = new Interpreter(AST);

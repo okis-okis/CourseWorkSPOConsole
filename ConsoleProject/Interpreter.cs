@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -12,7 +13,7 @@ namespace ConsoleProject
         public Interpreter(Node node)
         {
             this.node = node;
-            codeAdd("%include \"io64.inc\"");
+            codeAdd("BITS 32");
         }
 
         private void codeAdd(String command)
@@ -23,6 +24,8 @@ namespace ConsoleProject
         public void varDeclaration(String[][] vars)
         {
             codeAdd("section .data");
+            codeAdd("DAT1: db \"%i\"");
+
             foreach (String[] var in vars)
             {
                 if (var[0] == "int")
@@ -44,8 +47,9 @@ namespace ConsoleProject
         private void addMain()
         {
             codeAdd("section .text");
-            codeAdd("global CMAIN");
-            codeAdd("CMAIN:");
+            codeAdd("global _main");
+            codeAdd("extern _printf");
+            codeAdd("_main:");
         }
 
         private bool isReturn(Node n)
@@ -59,7 +63,7 @@ namespace ConsoleProject
 
         private void addReturn()
         {
-            codeAdd("ret");
+            codeAdd("ret 0");
         }
 
         public String getVal(Node n)
@@ -101,21 +105,47 @@ namespace ConsoleProject
                         }
                     }
                     else if (node.getOp().getValue() == "+" ||
-                            node.getOp().getValue() == "-")
+                            node.getOp().getValue() == "-"||
+                            node.getOp().getValue() == "*"||
+                            node.getOp().getValue() == "/")
                     {
                         string sr = getVal(node.getRight());
-                        string sl = getVal(node.getLeft());
+
                         if (sr != null)
                         {
                             codeAdd("mov ebx, " + sr);
                         }
+                        else
+                        {
+                            codeAdd("mov ebx, eax");
+                            codeAdd("push ebx");
+                        }
+
+                        string sl = getVal(node.getLeft());
+
                         if (sl != null)
                         {
                             codeAdd("mov eax, " + sl);
                         }
+
+                        if(sr == null)
+                        {
+                            codeAdd("pop ebx");
+                        }
+
                         if (node.getOp().getValue() == "+")
                         {
                             codeAdd("add eax, ebx");
+                        }
+                        else if (node.getOp().getValue() == "*")
+                        {
+                            codeAdd("mul ebx");
+                        }
+                        else if (node.getOp().getValue() == "/")
+                        {
+                            codeAdd("mov edx, 0");
+                            codeAdd("mov ecx, ebx");
+                            codeAdd("div ecx");
                         }
                         else
                         {
@@ -132,6 +162,11 @@ namespace ConsoleProject
                 }
                 else if (isReturn(node))
                 {
+                    codeAdd("movzx eax, byte [i]");
+                    codeAdd("push eax");
+                    codeAdd("push DAT1");
+                    codeAdd("call _printf");
+                    codeAdd("add  esp, 8");
                     addReturn();
                 }
                 else if(new Token(node.getValue()).getTokenID() == new TokenTypes().Num)
@@ -156,7 +191,7 @@ namespace ConsoleProject
             try
             {
                 // Create the file, or overwrite if the file exists.
-                using (FileStream fs = File.Create("interpteter.asm"))
+                using (FileStream fs = File.Create("interpreter.asm"))
                 {
                     byte[] info = new UTF8Encoding(true).GetBytes(code);
                     // Add some information to the file.
@@ -164,7 +199,7 @@ namespace ConsoleProject
                 }
 
                 // Open the stream and read it back.
-                using (StreamReader sr = File.OpenText("interpteter.asm"))
+                using (StreamReader sr = File.OpenText("interpreter.asm"))
                 {
                     string s = "";
                     while ((s = sr.ReadLine()) != null)
@@ -172,10 +207,36 @@ namespace ConsoleProject
                         Console.WriteLine(s);
                     }
                 }
+
+                //Console.WriteLine(Directory.GetCurrentDirectory());
+
+                /*Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.FileName = "cmd.exe";
+                startInfo.WorkingDirectory = @Directory.GetCurrentDirectory();
+                startInfo.Arguments = "nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && interpreter";
+                process.StartInfo = startInfo;
+                process.Start()*/
+
+                var p = new Process
+                {
+                    StartInfo =
+                 {
+                     FileName = "cmd.exe",
+                     WorkingDirectory = @Directory.GetCurrentDirectory(),
+                     Arguments = "/C nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && interpreter"
+                 }
+                }.Start();
+
+                //Console.WriteLine(command);
+
+                //Process.Start("CMD.exe", command);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Interpreter error!");
+                Console.WriteLine(ex.ToString());
                 Environment.Exit(2);
             }
         }
