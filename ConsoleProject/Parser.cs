@@ -217,7 +217,7 @@ namespace ConsoleProject
 
             while (currentToken().getToken() == ";" || (previousToken() != null && previousToken().getToken() == "}"))
             {
-                if(nextToken() == null || nextToken().getToken() == "}" || nextToken().getToken() == "return")
+                if (nextToken() == null || nextToken().getToken() == "}" || nextToken().getToken() == "return")
                 {
                     break;
                 }
@@ -226,7 +226,10 @@ namespace ConsoleProject
                     step();
                 }
                 list.Add(statement());
-                step();
+                if (currentToken().getToken() != ";")
+                {
+                    step();
+                }
             }
 
             return list.ToArray();

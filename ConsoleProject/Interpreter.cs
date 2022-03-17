@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
+//nasm -f elf32 interpreter.asm && gcc -m32 interpreter.o -o interpreter && ./interpreter
+
 namespace ConsoleProject
 {
     class Interpreter
@@ -24,13 +26,13 @@ namespace ConsoleProject
         public void varDeclaration(String[][] vars)
         {
             codeAdd("section .data");
-            codeAdd("DAT1: db \"%i\"");
+            codeAdd("DAT1: db \"%i\", 10, 0");
 
             foreach (String[] var in vars)
             {
                 if (var[0] == "int")
                 {
-                    codeAdd(var[1] + ": dw 0");
+                    codeAdd(var[1] + ": dq 0");
                 }
             }
         }
@@ -47,9 +49,15 @@ namespace ConsoleProject
         private void addMain()
         {
             codeAdd("section .text");
-            codeAdd("global _main");
-            codeAdd("extern _printf");
-            codeAdd("_main:");
+            codeAdd("global main");
+            codeAdd("extern printf");
+            codeAdd("main:");
+            codeAdd("");
+            codeAdd("xor eax, eax");
+            codeAdd("xor ebx, ebx");
+            codeAdd("xor ecx, ecx");
+            codeAdd("xor edx, edx");
+            codeAdd("");
         }
 
         private bool isReturn(Node n)
@@ -97,18 +105,28 @@ namespace ConsoleProject
                         string sr = getVal(node.getRight());
                         if(sr != null)
                         {
-                            codeAdd("mov " + getVal(node.getLeft()) + ", " + sr);
+                            codeAdd("mov eax, " + sr);
+                            //codeAdd("mov " + getVal(node.getLeft()) + ", " + sr);
                         }
-                        else
-                        {
-                            codeAdd("mov " + getVal(node.getLeft()) + ", eax");
-                        }
+                        codeAdd("mov " + getVal(node.getLeft()) + ", eax");
+                        codeAdd("");
                     }
                     else if (node.getOp().getValue() == "+" ||
                             node.getOp().getValue() == "-"||
                             node.getOp().getValue() == "*"||
                             node.getOp().getValue() == "/")
                     {
+                        string sl = getVal(node.getLeft());
+
+                        if (sl != null)
+                        {
+                            codeAdd("mov eax, " + sl);
+                        }
+                        else
+                        {
+                            codeAdd("push eax");
+                        }
+
                         string sr = getVal(node.getRight());
 
                         if (sr != null)
@@ -121,16 +139,13 @@ namespace ConsoleProject
                             codeAdd("push ebx");
                         }
 
-                        string sl = getVal(node.getLeft());
-
-                        if (sl != null)
-                        {
-                            codeAdd("mov eax, " + sl);
-                        }
-
-                        if(sr == null)
+                        if (sr == null)
                         {
                             codeAdd("pop ebx");
+                        }
+                        if (sl == null)
+                        {
+                            codeAdd("pop eax");
                         }
 
                         if (node.getOp().getValue() == "+")
@@ -151,6 +166,7 @@ namespace ConsoleProject
                         {
                             codeAdd("sub eax, ebx");
                         }
+                        codeAdd("");
                     }
                 }
             }
@@ -162,11 +178,11 @@ namespace ConsoleProject
                 }
                 else if (isReturn(node))
                 {
-                    codeAdd("movzx eax, byte [i]");
                     codeAdd("push eax");
-                    codeAdd("push DAT1");
-                    codeAdd("call _printf");
-                    codeAdd("add  esp, 8");
+                    codeAdd("push dword DAT1");
+                    codeAdd("call printf ");
+                    codeAdd("add esp, 8");
+
                     addReturn();
                 }
                 else if(new Token(node.getValue()).getTokenID() == new TokenTypes().Num)
@@ -218,7 +234,7 @@ namespace ConsoleProject
                 startInfo.Arguments = "nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && interpreter";
                 process.StartInfo = startInfo;
                 process.Start()*/
-
+                /*
                 var p = new Process
                 {
                     StartInfo =
@@ -227,7 +243,7 @@ namespace ConsoleProject
                      WorkingDirectory = @Directory.GetCurrentDirectory(),
                      Arguments = "/C nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && interpreter"
                  }
-                }.Start();
+                }.Start();*/
 
                 //Console.WriteLine(command);
 

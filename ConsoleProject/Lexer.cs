@@ -6,12 +6,12 @@ namespace ConsoleProject
 {
     interface ILexer
     {
-        public Token[] lex();
-        public String[] getDelimiter();
-        public String getVarNames();
-        public String[] getSystemWords();
+        Token[] lex();
+        String[] getDelimiter();
+        String getVarNames();
+        String[] getSystemWords();
 
-        public Char[] getUsedVarNames();
+        Char[] getUsedVarNames();
     }
 
     class Lexer : ILexer
