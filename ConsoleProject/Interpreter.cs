@@ -12,9 +12,13 @@ namespace ConsoleProject
     {
         Node node;
         private String code;
-        public Interpreter(Node node)
+        private String[] usedStrings;
+
+        public Interpreter(Node node, String[] usedString)
         {
             this.node = node;
+            this.usedStrings = usedString;
+            
             codeAdd("BITS 32");
         }
 
@@ -23,10 +27,14 @@ namespace ConsoleProject
             code += command + "\n";
         }
 
-        public void varDeclaration(String[][] vars)
+        public async void varDeclaration(String[][] vars)
         {
+            codeAdd("");
             codeAdd("section .data");
-            codeAdd("DAT1: db \"%i\", 10, 0");
+            
+            for(int i=0;i<usedStrings.Length;i++){
+                codeAdd("DAT"+i+": db "+usedStrings[i]+", 10, 0");
+            }
 
             foreach (String[] var in vars)
             {
@@ -48,9 +56,11 @@ namespace ConsoleProject
 
         private void addMain()
         {
+            codeAdd("");
             codeAdd("section .text");
             codeAdd("global main");
             codeAdd("extern printf");
+            codeAdd("extern scanf");
             codeAdd("main:");
             codeAdd("");
             codeAdd("xor eax, eax");
@@ -168,6 +178,29 @@ namespace ConsoleProject
                         }
                         codeAdd("");
                     }
+                    else if(node.getOp().getValue() == "printf"){
+                        codeAdd("mov eax, "+getVal(node.getRight()));
+                        codeAdd("push eax");
+                        for(int i=0;i<usedStrings.Length;i++){
+                            if(usedStrings[i] == node.getLeft().getValue()){
+                                codeAdd("push dword DAT"+i);
+                            }
+                        }
+                        codeAdd("call printf");
+                        codeAdd("add esp, 8");
+                        codeAdd("");
+                    }
+                    else if(node.getOp().getValue() == "scanf"){
+                        codeAdd("push "+node.getRight().getValue());
+                        for(int i=0;i<usedStrings.Length;i++){
+                            if(usedStrings[i] == node.getLeft().getValue()){
+                                codeAdd("push dword DAT"+i);
+                            }
+                        }
+                        codeAdd("call scanf");
+                        codeAdd("add esp, 8");
+                        codeAdd("");
+                    }
                 }
             }
             else if (node.isToken())
@@ -178,11 +211,6 @@ namespace ConsoleProject
                 }
                 else if (isReturn(node))
                 {
-                    codeAdd("push eax");
-                    codeAdd("push dword DAT1");
-                    codeAdd("call printf ");
-                    codeAdd("add esp, 8");
-
                     addReturn();
                 }
                 else if(new Token(node.getValue()).getTokenID() == new TokenTypes().Num)
@@ -224,16 +252,19 @@ namespace ConsoleProject
                     }
                 }
 
+                Console.WriteLine("================\n\nExecute program:");
+                ExecuteCommand("nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && ./interpreter");
+
                 //Console.WriteLine(Directory.GetCurrentDirectory());
 
                 /*Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                startInfo.FileName = "cmd.exe";
+                startInfo.FileName = "/bin/bash";
                 startInfo.WorkingDirectory = @Directory.GetCurrentDirectory();
-                startInfo.Arguments = "nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && interpreter";
+                startInfo.Arguments = "echo 'Work'";
                 process.StartInfo = startInfo;
-                process.Start()*/
+                process.Start();*/
                 /*
                 var p = new Process
                 {
@@ -254,6 +285,20 @@ namespace ConsoleProject
                 Console.WriteLine("Interpreter error!");
                 Console.WriteLine(ex.ToString());
                 Environment.Exit(2);
+            }
+        }
+
+        public static void ExecuteCommand(string command)
+        {
+            Process proc = new System.Diagnostics.Process ();
+            proc.StartInfo.FileName = "/bin/bash";
+            proc.StartInfo.Arguments = "-c \" " + command + " \"";
+            proc.StartInfo.UseShellExecute = false; 
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.Start ();
+
+            while (!proc.StandardOutput.EndOfStream) {
+                Console.WriteLine (proc.StandardOutput.ReadLine ());
             }
         }
 

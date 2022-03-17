@@ -192,6 +192,40 @@ namespace ConsoleProject
             return new Node(new Token(";"));
         }
 
+        private Node inout(){
+            Node left = null, right=null, op=null;
+            op = new Node(currentToken());
+            step();
+
+            if(currentToken().getToken() == "("){
+                step();
+            }
+            else{
+                Error();
+            }
+
+            left = new Node(currentToken());
+            step();
+
+            if(currentToken().getToken() == ","){
+                step();
+            }
+            else{
+                Error();
+            }
+
+            right = new Node(currentToken());
+            step();
+
+            if(currentToken().getToken() == ")"){
+                step();
+            }
+            else{
+                Error();
+            }
+            return new Node(left, op, right);
+        }
+
         private Node statement()
         {
             if (currentToken().isDataType() || currentToken().getTokenID() == new TokenTypes().Id)
@@ -201,6 +235,9 @@ namespace ConsoleProject
             else if(currentToken().getTokenID()==new TokenTypes().Delimiter && currentToken().getToken() == "{")
             {
                 return compound();
+            }
+            else if(currentToken().getTokenID() == new TokenTypes().SysWord && (currentToken().getToken() == "printf" || currentToken().getToken() == "scanf")){
+                return inout();
             }
             return empty();
         }
@@ -288,7 +325,6 @@ namespace ConsoleProject
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == "(")
             {
-                //list.Add(new Node(currentToken()));
                 step();
             }
             else
@@ -298,7 +334,6 @@ namespace ConsoleProject
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == ")")
             {
-                //list.Add(new Node(currentToken()));
                 step();
             }
             else
@@ -308,7 +343,6 @@ namespace ConsoleProject
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == "{")
             {
-                //list.Add(new Node(currentToken()));
                 step();
             }
             else
@@ -337,7 +371,6 @@ namespace ConsoleProject
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == ";")
             {
-                //list.Add(new Node(currentToken()));
                 step();
             }
             else
@@ -347,7 +380,6 @@ namespace ConsoleProject
 
             if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == "}")
             {
-                //list.Add(new Node(currentToken()));
             }
             else
             {
@@ -429,6 +461,7 @@ namespace ConsoleProject
             {
                 Console.WriteLine("Var: "+var[0]+" "+var[1]);
             }
+            
         }
     }
 }

@@ -45,6 +45,15 @@ namespace ConsoleProject
                 //PARSER
                 Parser parser = new Parser(tokens);
                 Node AST = parser.parse();
+                Console.WriteLine("Used strings: ");
+                List <String> list = new List<String>();
+                foreach (String var in lexer.getValues())
+                {
+                    if(var.Length>1&&var[0]=='\"'){
+                        Console.WriteLine("Value: "+var);
+                        list.Add(var);
+                    }
+                }
                 parser.outputVar();
 
                 //Interpreter interpreter = new Interpreter(AST);
@@ -52,7 +61,7 @@ namespace ConsoleProject
                 Console.WriteLine();
                 //Spend syntax analysis
 
-                Interpreter interpreter = new Interpreter(AST);
+                Interpreter interpreter = new Interpreter(AST, list.ToArray());
                 interpreter.interpret(parser.getVarArray());
 
                 //Console.WriteLine("Result is: " + interpreter.interpret());
