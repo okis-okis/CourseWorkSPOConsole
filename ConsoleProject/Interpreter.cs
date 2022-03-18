@@ -13,12 +13,13 @@ namespace ConsoleProject
         Node node;
         private String code;
         private String[] usedStrings;
+        private Int16 stage;
 
         public Interpreter(Node node, String[] usedString)
         {
             this.node = node;
             this.usedStrings = usedString;
-            
+            stage = 0;
             codeAdd("BITS 32");
         }
 
@@ -31,9 +32,12 @@ namespace ConsoleProject
         {
             codeAdd("");
             codeAdd("section .data");
-            
+            codeAdd("ns: db \"\", 10, 0");
+            codeAdd("negative: db \"-%d\", 0");
+            codeAdd("positiv: db \"%d\", 0");
+
             for(int i=0;i<usedStrings.Length;i++){
-                codeAdd("DAT"+i+": db "+usedStrings[i]+", 10, 0");
+                codeAdd("DAT"+i+": db "+usedStrings[i]+", 0");
             }
 
             foreach (String[] var in vars)
@@ -96,6 +100,43 @@ namespace ConsoleProject
                 interpretCode(n);
             }
             return n.getValue();
+        }
+
+        private void endl(){
+            codeAdd("push dword ns");
+            codeAdd("call printf");
+            codeAdd("add esp, 4");
+            codeAdd("");
+        }
+
+        /*private void negativeNumber(){
+            codeAdd("push eax");
+            codeAdd("push dword negative");
+            codeAdd("call printf");
+            codeAdd("add esp, 8");
+            codeAdd("");
+        }*/
+
+        private void outputVal(){
+            codeAdd("mov ebx, 1000000000000000000000000000000b");
+            codeAdd("cmp eax, ebx");
+            codeAdd("jl pos"+stage);
+            codeAdd("");
+            codeAdd("xor eax, ebx");
+            codeAdd("push eax");
+            codeAdd("push dword negative");
+            codeAdd("call printf");
+            codeAdd("add esp, 8");
+            codeAdd("jmp con"+stage);
+            codeAdd("");
+            codeAdd("pos"+stage+":");
+            codeAdd("push eax");
+            codeAdd("push dword positiv");
+            codeAdd("call printf");
+            codeAdd("add esp, 8");
+            codeAdd("");
+            codeAdd("con"+stage+":");
+            stage++;
         }
 
         public void interpretCode(Node node)
@@ -179,16 +220,40 @@ namespace ConsoleProject
                         codeAdd("");
                     }
                     else if(node.getOp().getValue() == "printf"){
-                        codeAdd("mov eax, "+getVal(node.getRight()));
-                        codeAdd("push eax");
+                        /*
+                        if(node.getRight() != null){
+                            codeAdd("mov eax, "+outputVal(getVal(node.getRight())));
+                            codeAdd("push eax");
+                        }
                         for(int i=0;i<usedStrings.Length;i++){
                             if(usedStrings[i] == node.getLeft().getValue()){
                                 codeAdd("push dword DAT"+i);
                             }
                         }
                         codeAdd("call printf");
-                        codeAdd("add esp, 8");
+                        if(node.getRight()!= null){
+                            codeAdd("add esp, 8");
+                        }
+                        else{
+                            codeAdd("add esp, 4");
+                        }*/
+
+                        for(int i=0;i<usedStrings.Length;i++){
+                            Console.WriteLine(node.getLeft().getValue());
+                            if(usedStrings[i] == node.getLeft().getValue()){
+                                codeAdd("push dword DAT"+i);
+                            }
+                        }
+                        codeAdd("call printf");
+                        codeAdd("add esp, 4");
                         codeAdd("");
+
+                        if(node.getRight() != null){
+                            codeAdd("mov eax, "+getVal(node.getRight()));
+                            outputVal();
+                        }
+
+                        endl();
                     }
                     else if(node.getOp().getValue() == "scanf"){
                         codeAdd("push "+node.getRight().getValue());

@@ -4,11 +4,12 @@ int main(){
 
 	scanf("%d", t);
 
-	int c = 5+t;		//5
+	int c = 5;		//5
 	int d = c+11;		//16
 	int g = (5-2)*10;	//30
-	i = 5+10 + (g-d)*c;	//85
+	i = (5+10 + (g-d)*c) * (-1);	//85
 	
+	printf("Result:");
 	printf("c = %d", c);
 	printf("d = %d", d);
 	printf("g = %d", g);

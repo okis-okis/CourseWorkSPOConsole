@@ -1,12 +1,16 @@
 BITS 32
 
 section .data
-DAT0: db "%d", 10, 0
-DAT1: db "c = %d", 10, 0
-DAT2: db "d = %d", 10, 0
-DAT3: db "g = %d", 10, 0
-DAT4: db "i = %d", 10, 0
-DAT5: db "t = %d", 10, 0
+ns: db "", 10, 0
+negative: db "-%d", 0
+positiv: db "%d", 0
+DAT0: db "%d", 0
+DAT1: db "Result:", 0
+DAT2: db "c = ", 0
+DAT3: db "d = ", 0
+DAT4: db "g = ", 0
+DAT5: db "i = ", 0
+DAT6: db "t = ", 0
 i: dq 0
 t: dq 0
 c: dq 0
@@ -30,9 +34,6 @@ call scanf
 add esp, 8
 
 mov eax, 5
-mov ebx, [t]
-add eax, ebx
-
 mov [c], eax
 
 mov eax, [c]
@@ -72,36 +73,160 @@ pop ebx
 pop eax
 add eax, ebx
 
+push eax
+mov eax, 0
+mov ebx, 1
+sub eax, ebx
+
+mov ebx, eax
+push ebx
+pop ebx
+pop eax
+mul ebx
+
 mov [i], eax
 
-mov eax, [c]
-push eax
 push dword DAT1
 call printf
-add esp, 8
+add esp, 4
 
-mov eax, [d]
-push eax
+push dword ns
+call printf
+add esp, 4
+
 push dword DAT2
 call printf
+add esp, 4
+
+mov eax, [c]
+mov ebx, 1000000000000000000000000000000b
+cmp eax, ebx
+jl pos0
+
+xor eax, ebx
+push eax
+push dword negative
+call printf
+add esp, 8
+jmp con0
+
+pos0:
+push eax
+push dword positiv
+call printf
 add esp, 8
 
-mov eax, [g]
-push eax
+con0:
+push dword ns
+call printf
+add esp, 4
+
 push dword DAT3
 call printf
+add esp, 4
+
+mov eax, [d]
+mov ebx, 1000000000000000000000000000000b
+cmp eax, ebx
+jl pos1
+
+xor eax, ebx
+push eax
+push dword negative
+call printf
+add esp, 8
+jmp con1
+
+pos1:
+push eax
+push dword positiv
+call printf
 add esp, 8
 
-mov eax, [i]
-push eax
+con1:
+push dword ns
+call printf
+add esp, 4
+
 push dword DAT4
 call printf
-add esp, 8
+add esp, 4
 
-mov eax, [t]
+mov eax, [g]
+mov ebx, 1000000000000000000000000000000b
+cmp eax, ebx
+jl pos2
+
+xor eax, ebx
 push eax
-push dword DAT5
+push dword negative
 call printf
 add esp, 8
+jmp con2
+
+pos2:
+push eax
+push dword positiv
+call printf
+add esp, 8
+
+con2:
+push dword ns
+call printf
+add esp, 4
+
+push dword DAT5
+call printf
+add esp, 4
+
+mov eax, [i]
+mov ebx, 1000000000000000000000000000000b
+cmp eax, ebx
+jl pos3
+
+xor eax, ebx
+push eax
+push dword negative
+call printf
+add esp, 8
+jmp con3
+
+pos3:
+push eax
+push dword positiv
+call printf
+add esp, 8
+
+con3:
+push dword ns
+call printf
+add esp, 4
+
+push dword DAT6
+call printf
+add esp, 4
+
+mov eax, [t]
+mov ebx, 1000000000000000000000000000000b
+cmp eax, ebx
+jl pos4
+
+xor eax, ebx
+push eax
+push dword negative
+call printf
+add esp, 8
+jmp con4
+
+pos4:
+push eax
+push dword positiv
+call printf
+add esp, 8
+
+con4:
+push dword ns
+call printf
+add esp, 4
 
 ret 0

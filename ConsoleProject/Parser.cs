@@ -9,11 +9,13 @@ namespace ConsoleProject
         private int tokenPos = 0;
         private Token[] tokens;
         private List<String[]> varDeclaration;
+        private String[] values;
 
-        public Parser(Token[] tokens)
+        public Parser(Token[] tokens, String[] values)
         {
             this.tokens = tokens;
             varDeclaration = new List<String[]>();
+            this.values = values;
         }
 
         private void Error()
@@ -204,11 +206,39 @@ namespace ConsoleProject
                 Error();
             }
 
-            left = new Node(currentToken());
+            //if printf
+            if(op.getValue() == "printf"){
+                String procStr = "";
+                for(int i=0;i<values.Length;i++){
+                    if(currentToken().getToken() == values[i]){
+                        bool con = false;
+                        foreach(Char c in values[i]){
+                            if(c == '%'){
+                                con = !con;
+                                continue;
+                            }
+                            if(con){
+                                con = !con;
+                                continue;
+                            }
+                            procStr += c;
+                        }
+                        values[i] = procStr;
+                    }
+                }
+                left = new Node(new Token(procStr));
+            }
+            else{
+                left = new Node(currentToken());
+            }
             step();
 
             if(currentToken().getToken() == ","){
                 step();
+            }
+            else if(currentToken().getToken() == ")"){
+                step();
+                return new Node(left, op, null);
             }
             else{
                 Error();
@@ -224,6 +254,16 @@ namespace ConsoleProject
                 Error();
             }
             return new Node(left, op, right);
+        }
+
+        public String[] getValues(){
+            List <String> list = new List<String>();
+            foreach(String s in values){
+                if(s.Length>1 && s[0] == '"'){
+                    list.Add(s);
+                }
+            }
+            return list.ToArray();
         }
 
         private Node statement()
