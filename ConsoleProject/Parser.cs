@@ -266,6 +266,71 @@ namespace ConsoleProject
             return list.ToArray();
         }
 
+        private Node condition(){
+            List<Node> list = new List<Node>();
+            while(currentToken().getTokenID() == new TokenTypes().SysWord && 
+                    (currentToken().getToken() == "if" || 
+                    currentToken().getToken() == "else")){
+                
+                if(currentToken().getToken() == "else" && nextToken().getToken() == "if")
+                {
+                    step();
+                }
+
+                Node op, left = null;
+                op = new Node(currentToken());
+                step();
+                Node lp = null, opc = null, rp = null;
+                if (op.getValue() != "else")
+                {
+                    if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == "(")
+                    {
+                        step();
+                    }
+                    else
+                    {
+                        Error();
+                    }
+
+                    lp = expr();
+
+                    step();
+                    if (currentToken().getTokenID() == new TokenTypes().Delimiter &&
+                        (currentToken().getToken() == ">" ||
+                        currentToken().getToken() == "<" ||
+                        currentToken().getToken() == ">=" ||
+                        currentToken().getToken() == "<=" ||
+                        currentToken().getToken() == "==" ||
+                        currentToken().getToken() == "!="))
+                    {
+                        opc = new Node(currentToken());
+                        step();
+                    }
+                    else
+                    {
+                        Error();
+                    }
+
+                    rp = expr();
+                    step();
+                    left = new Node(lp, opc, rp);
+
+
+                    if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == ")")
+                    {
+                        step();
+                    }
+                    else
+                    {
+                        Error();
+                    }
+                }
+                list.Add(new Node(left, op, compound()));
+            }
+
+            return new Node(list.ToArray());
+        }
+
         private Node statement()
         {
             if (currentToken().isDataType() || currentToken().getTokenID() == new TokenTypes().Id)
@@ -279,6 +344,9 @@ namespace ConsoleProject
             else if(currentToken().getTokenID() == new TokenTypes().SysWord && (currentToken().getToken() == "printf" || currentToken().getToken() == "scanf")){
                 return inout();
             }
+            else if(currentToken().getTokenID() == new TokenTypes().SysWord && currentToken().getToken() == "if"){
+                return condition();
+            }
             return empty();
         }
 
@@ -287,6 +355,11 @@ namespace ConsoleProject
             List<Node> list = new List<Node> ();
             list.Add(statement());
             
+            if(currentToken().getToken() == "}")
+            {
+                return list.ToArray();
+            }
+
             if (currentToken().getToken() != "return" && currentToken().getToken() != ";")
             {
                 step();
@@ -294,7 +367,7 @@ namespace ConsoleProject
 
             while (currentToken().getToken() == ";" || (previousToken() != null && previousToken().getToken() == "}"))
             {
-                if (nextToken() == null || nextToken().getToken() == "}" || nextToken().getToken() == "return")
+                if (currentToken().getToken() == "return" || nextToken() == null || nextToken().getToken() == "}" || nextToken().getToken() == "return")
                 {
                     break;
                 }
@@ -303,7 +376,7 @@ namespace ConsoleProject
                     step();
                 }
                 list.Add(statement());
-                if (currentToken().getToken() != ";")
+                if (currentToken().getToken() != ";" && currentToken().getToken() != "return")
                 {
                     step();
                 }
@@ -332,6 +405,7 @@ namespace ConsoleProject
 
                 if (currentToken().getTokenID() == new TokenTypes().Delimiter && currentToken().getToken() == "}")
                 {
+                    step();
                 }
             }
             else

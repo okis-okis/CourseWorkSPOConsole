@@ -47,24 +47,21 @@ namespace ConsoleProject
                 Node AST = parser.parse();
                 Console.WriteLine("Used strings: ");
                 List <String> list = new List<String>();
-                /*foreach (String var in lexer.getValues())
+                foreach (String var in parser.getValues())
                 {
                     if(var.Length>1&&var[0]=='\"'){
                         Console.WriteLine("Value: "+var);
                         list.Add(var);
                     }
-                }*/
+                }
                 parser.outputVar();
 
-                //Interpreter interpreter = new Interpreter(AST);
                 Console.WriteLine("Interpreter");
                 Console.WriteLine();
                 //Spend syntax analysis
 
                 Interpreter interpreter = new Interpreter(AST, parser.getValues());
                 interpreter.interpret(parser.getVarArray());
-
-                //Console.WriteLine("Result is: " + interpreter.interpret());
 
             }
             else

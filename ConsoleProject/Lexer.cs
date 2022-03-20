@@ -41,6 +41,7 @@ namespace ConsoleProject
                 //Operators
                 "for",
                 "if",
+                "else",
                 "goto",
                 "printf",
                 "scanf",

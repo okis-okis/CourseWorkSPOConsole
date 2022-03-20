@@ -14,12 +14,16 @@ namespace ConsoleProject
         private String code;
         private String[] usedStrings;
         private Int16 stage;
+        private Int16 absoluteStage;
+        private bool ifCon;
 
         public Interpreter(Node node, String[] usedString)
         {
             this.node = node;
             this.usedStrings = usedString;
             stage = 0;
+            absoluteStage = 0;
+            ifCon = false;
             codeAdd("BITS 32");
         }
 
@@ -95,6 +99,10 @@ namespace ConsoleProject
             {
                 return "["+ n.getValue() + "]";
             }
+            else if(n.getValue() == ";")
+            {
+                return "eax";
+            }
             else if (n.isNode())
             {
                 interpretCode(n);
@@ -108,14 +116,6 @@ namespace ConsoleProject
             codeAdd("add esp, 4");
             codeAdd("");
         }
-
-        /*private void negativeNumber(){
-            codeAdd("push eax");
-            codeAdd("push dword negative");
-            codeAdd("call printf");
-            codeAdd("add esp, 8");
-            codeAdd("");
-        }*/
 
         private void outputVal(){
             codeAdd("mov ebx, 1000000000000000000000000000000b");
@@ -143,8 +143,20 @@ namespace ConsoleProject
         {
             if (node.isCompound())
             {
-                foreach(Node n in node.getNodes()){
-                    interpretCode(n);
+                if (node.getNodes().Length > 1 && node.getNodes()[0].isNode() && node.getNodes()[0].getOp().getValue() == "if")
+                {
+                    foreach (Node n in node.getNodes())
+                        interpretCode(n);
+                    codeAdd("cnt" + absoluteStage + ":");
+                    absoluteStage++;
+                }
+                else
+                {
+
+                    foreach (Node n in node.getNodes())
+                    {
+                        interpretCode(n);
+                    }
                 }
             }
             else if (node.isNode())
@@ -266,6 +278,77 @@ namespace ConsoleProject
                         codeAdd("add esp, 8");
                         codeAdd("");
                     }
+                    else if (node.getOp().getValue() == "if")
+                    {
+                        Node subNode = node.getLeft();
+                        if (subNode.getRight() != null)
+                        {
+                            String val = getVal(subNode.getRight());
+                            if (val != null) {
+                                codeAdd("mov eax, " + val);
+                            }
+                            codeAdd("mov ebx, eax");
+                            codeAdd("push ebx");
+                            codeAdd("");
+                        }
+
+                        if (subNode.getLeft() != null)
+                        {
+                            String val = getVal(subNode.getLeft());
+                            if (val != null)
+                            {
+                                codeAdd("mov eax, " + val);
+                            }
+                            codeAdd("pop ebx");
+                            codeAdd("");
+                        }
+                        codeAdd("cmp eax, ebx");
+                        String bp = "";
+
+                        switch (subNode.getOp().getValue())
+                        {
+                            case "<":
+                                bp = "cjl" + stage;
+                                codeAdd("jl " + bp);
+                                break;
+                            case ">":
+                                bp = "cgl" + stage;
+                                codeAdd("jg " + bp);
+                                break;
+                            case "<=":
+                                bp = "cjle" + stage;
+                                codeAdd("jle " + bp);
+                                break;
+                            case ">=":
+                                bp = "cjge" + stage;
+                                codeAdd("jge " + bp);
+                                break;
+                            case "==":
+                                bp = "cje" + stage;
+                                codeAdd("je " + bp);
+                                break;
+                            case "!=":
+                                bp = "cjne" + stage;
+                                codeAdd("jne ");
+                                break;
+                        }
+
+                        codeAdd("jmp con" + stage);
+                        codeAdd("");
+                        codeAdd(bp + ":");
+                        interpretCode(node.getRight());
+                        codeAdd("jmp cnt" + absoluteStage);
+                        codeAdd("");
+
+                        codeAdd("con" + stage + ":");
+                        stage++;
+
+                    }
+                    else if(node.getOp().getValue() == "else")
+                    {
+                        getVal(node.getRight());
+                        //ifCon = false;
+                    }
                 }
             }
             else if (node.isToken())
@@ -318,7 +401,7 @@ namespace ConsoleProject
                 }
 
                 Console.WriteLine("================\n\nExecute program:");
-                ExecuteCommand("nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && ./interpreter");
+                //ExecuteCommand("nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && ./interpreter");
 
                 //Console.WriteLine(Directory.GetCurrentDirectory());
 
@@ -330,7 +413,7 @@ namespace ConsoleProject
                 startInfo.Arguments = "echo 'Work'";
                 process.StartInfo = startInfo;
                 process.Start();*/
-                /*
+                
                 var p = new Process
                 {
                     StartInfo =
@@ -339,7 +422,7 @@ namespace ConsoleProject
                      WorkingDirectory = @Directory.GetCurrentDirectory(),
                      Arguments = "/C nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && interpreter"
                  }
-                }.Start();*/
+                }.Start();
 
                 //Console.WriteLine(command);
 
@@ -365,11 +448,6 @@ namespace ConsoleProject
             while (!proc.StandardOutput.EndOfStream) {
                 Console.WriteLine (proc.StandardOutput.ReadLine ());
             }
-        }
-
-        private void visit(Node node)
-        {
-
         }
 
         /*private int visit(Node node)

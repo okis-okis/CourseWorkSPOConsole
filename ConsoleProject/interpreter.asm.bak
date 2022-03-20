@@ -30,7 +30,7 @@ mov ebx, 6
 cmp eax, ebx
 jl c1
 jg c2
-je c3
+;je c3
 jne c4
 
 c1:
