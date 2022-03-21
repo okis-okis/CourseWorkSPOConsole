@@ -7,7 +7,7 @@ Link: https://ruslanspivak.com/lsbasi-part1/
 
 ### Test 1
 <code>
-  int main(){
+ int main(){
 	
 	int c = 1;				//1
 	printf("c= %d", c);
@@ -25,21 +25,9 @@ Link: https://ruslanspivak.com/lsbasi-part1/
 	c = 7 + (((3 + 2)));	//12
 	printf("Result: %d", g);
 	printf("Result: %d", c);
-
-	return 0;
-}
-</code>
-
-Output:
-<code>
-  
-</code>
-
-### Test 2
-<code>
-int main(){
-	int c = 6;
-	int d = 5;
+	
+	c = 6;
+	d = 5;
 	c = (c+1+2)*2;
 	printf("Result: %d", c);
 	if (c < (d+1+2)*2) {
@@ -51,10 +39,22 @@ int main(){
 	else {
 		printf("else");
 	}
-
+	
 	return 0;
 }
+
 </code>
 
-### This section  is editing...
-
+Output:
+<code>
+c= 1
+t= -30
+d= 2
+g= -1
+w= -4
+Result: 10
+Result: 22
+Result: 12
+Result: 18
+else
+</code>
