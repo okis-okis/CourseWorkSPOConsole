@@ -6,8 +6,7 @@ Link: https://ruslanspivak.com/lsbasi-part1/
 ## Simple C code for test
 
 ### Test 1
-<code>
- 	int main(){
+<code> 	int main(){
 	
 	int c = 1;				//1
 	printf("c= %d", c);
@@ -41,9 +40,7 @@ Link: https://ruslanspivak.com/lsbasi-part1/
 	}
 	
 	return 0;
-}
-
-</code>
+	}</code>
 
 Output:
 <code>
