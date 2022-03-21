@@ -223,7 +223,6 @@ namespace ConsoleProject
                             }
                             procStr += c;
                         }
-                        values[i] = procStr;
                     }
                 }
                 left = new Node(new Token(procStr));

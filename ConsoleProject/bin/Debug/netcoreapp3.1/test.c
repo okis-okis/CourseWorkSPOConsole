@@ -14,9 +14,8 @@ int main(){
 	printf("Result: %d", t);
 	g = 7 + 3 * (10 / (12 / (3 + 1) - 1));	//22
 	c = 7 + (((3 + 2)));	//12
-	//printf("Result: %d", g);
-	//printf("Result: %d", c);
-
+	printf("Result: %d", g);
+	printf("Result: %d", c);
 	
 	c = 6;
 	d = 5;
@@ -31,5 +30,6 @@ int main(){
 	else {
 		printf("else");
 	}
+	
 	return 0;
 }

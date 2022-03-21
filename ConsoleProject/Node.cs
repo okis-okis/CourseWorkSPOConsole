@@ -23,10 +23,10 @@ namespace ConsoleProject
         public Node(Token token):this()
         {
             end = true;
-            if(token.getTokenID() == new TokenTypes().NOP)
+            /*if(token.getTokenID() == new TokenTypes().NOP)
             {
                 Error();
-            }
+            }*/
             value = token.getToken();
         }
 

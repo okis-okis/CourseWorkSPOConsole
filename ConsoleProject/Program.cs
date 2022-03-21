@@ -27,7 +27,7 @@ namespace ConsoleProject
             
             foreach (Token token in tokens)
             {
-                //printTokenInfo(token);
+                printTokenInfo(token);
 
                 if (token.getTokenID() == new TokenTypes().NOP)
                 {
@@ -35,7 +35,7 @@ namespace ConsoleProject
                     errorToken.Add(token);
                 }
 
-                //Console.WriteLine();
+                Console.WriteLine();
             }
 
             if (error == 0)
@@ -73,7 +73,6 @@ namespace ConsoleProject
                     printTokenInfo(token);
                 }
             }
-
         }
 
         static void printTokenInfo(Token token)

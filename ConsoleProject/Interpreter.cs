@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 
 //nasm -f elf32 interpreter.asm && gcc -m32 interpreter.o -o interpreter && ./interpreter
@@ -20,7 +21,31 @@ namespace ConsoleProject
         public Interpreter(Node node, String[] usedString)
         {
             this.node = node;
-            this.usedStrings = usedString;
+
+            List <String> list = new List <String>();
+            for (int i = 0; i < usedString.Length; i++)
+            {
+                String procStr = "";
+                bool con = false;
+                foreach (Char c in usedString[i])
+                {
+                    if (c == '%')
+                    {
+                        con = !con;
+                        continue;
+                    }
+                    if (con)
+                    {
+                        con = !con;
+                        continue;
+                    }
+                    procStr += c;
+                }
+                list.Add(procStr);
+            }
+
+            this.usedStrings = list.ToArray();
+
             stage = 0;
             absoluteStage = 0;
             ifCon = false;
@@ -66,10 +91,23 @@ namespace ConsoleProject
         {
             codeAdd("");
             codeAdd("section .text");
-            codeAdd("global main");
-            codeAdd("extern printf");
-            codeAdd("extern scanf");
-            codeAdd("main:");
+            //codeAdd("global main");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                codeAdd("global _main");
+                codeAdd("extern _printf");
+                codeAdd("extern _scanf");
+
+                codeAdd("_main:");
+            }
+            else
+            {
+                codeAdd("global main");
+                codeAdd("extern printf");
+                codeAdd("extern scanf");
+
+                codeAdd("main:");
+            }
             codeAdd("");
             codeAdd("xor eax, eax");
             codeAdd("xor ebx, ebx");
@@ -112,7 +150,14 @@ namespace ConsoleProject
 
         private void endl(){
             codeAdd("push dword ns");
-            codeAdd("call printf");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                codeAdd("call _printf");
+            }
+            else
+            {
+                codeAdd("call printf");
+            }
             codeAdd("add esp, 4");
             codeAdd("");
         }
@@ -125,14 +170,28 @@ namespace ConsoleProject
             codeAdd("xor eax, ebx");
             codeAdd("push eax");
             codeAdd("push dword negative");
-            codeAdd("call printf");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                codeAdd("call _printf");
+            }
+            else
+            {
+                codeAdd("call printf");
+            }
             codeAdd("add esp, 8");
             codeAdd("jmp con"+stage);
             codeAdd("");
             codeAdd("pos"+stage+":");
             codeAdd("push eax");
             codeAdd("push dword positiv");
-            codeAdd("call printf");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                codeAdd("call _printf");
+            }
+            else
+            {
+                codeAdd("call printf");
+            }
             codeAdd("add esp, 8");
             codeAdd("");
             codeAdd("con"+stage+":");
@@ -233,31 +292,22 @@ namespace ConsoleProject
                         codeAdd("");
                     }
                     else if(node.getOp().getValue() == "printf"){
-                        /*
-                        if(node.getRight() != null){
-                            codeAdd("mov eax, "+outputVal(getVal(node.getRight())));
-                            codeAdd("push eax");
-                        }
-                        for(int i=0;i<usedStrings.Length;i++){
-                            if(usedStrings[i] == node.getLeft().getValue()){
-                                codeAdd("push dword DAT"+i);
-                            }
-                        }
-                        codeAdd("call printf");
-                        if(node.getRight()!= null){
-                            codeAdd("add esp, 8");
-                        }
-                        else{
-                            codeAdd("add esp, 4");
-                        }*/
 
                         for(int i=0;i<usedStrings.Length;i++){
-                            Console.WriteLine(node.getLeft().getValue());
+                            //Console.WriteLine(node.getLeft().getValue());
                             if(usedStrings[i] == node.getLeft().getValue()){
                                 codeAdd("push dword DAT"+i);
                             }
                         }
-                        codeAdd("call printf");
+
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            codeAdd("call _printf");
+                        }
+                        else
+                        {
+                            codeAdd("call _printf");
+                        }
                         codeAdd("add esp, 4");
                         codeAdd("");
 
@@ -275,7 +325,14 @@ namespace ConsoleProject
                                 codeAdd("push dword DAT"+i);
                             }
                         }
-                        codeAdd("call scanf");
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            codeAdd("call _scanf");
+                        }
+                        else
+                        {
+                            codeAdd("call scanf");
+                        }
                         codeAdd("add esp, 8");
                         codeAdd("");
                     }
@@ -401,8 +458,8 @@ namespace ConsoleProject
                     }
                 }
 
-                Console.WriteLine("================\n\nExecute program:");
-                ExecuteCommand("nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && ./interpreter");
+
+                //
 
                 //Console.WriteLine(Directory.GetCurrentDirectory());
 
@@ -414,17 +471,25 @@ namespace ConsoleProject
                 startInfo.Arguments = "echo 'Work'";
                 process.StartInfo = startInfo;
                 process.Start();*/
-                
-                /*var p = new Process
+
+                Console.WriteLine("================\n\nExecute program:");
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    StartInfo =
+                    var p = new Process
+                    {
+                        StartInfo =
                  {
                      FileName = "cmd.exe",
                      WorkingDirectory = @Directory.GetCurrentDirectory(),
                      Arguments = "/C nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && interpreter"
                  }
-                }.Start();
-                */
+                    }.Start();
+                }
+                else
+                {
+                    ExecuteCommand("nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && ./interpreter");
+                }
                 //Console.WriteLine(command);
 
                 //Process.Start("CMD.exe", command);
