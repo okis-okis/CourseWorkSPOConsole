@@ -7,7 +7,7 @@ Link: https://ruslanspivak.com/lsbasi-part1/
 
 ### Test 1
 <code>
- int main(){
+ 	int main(){
 	
 	int c = 1;				//1
 	printf("c= %d", c);
@@ -47,14 +47,14 @@ Link: https://ruslanspivak.com/lsbasi-part1/
 
 Output:
 <code>
-c= 1
-t= -30
-d= 2
-g= -1
-w= -4
-Result: 10
-Result: 22
-Result: 12
-Result: 18
-else
+	c= 1
+	t= -30
+	d= 2
+	g= -1
+	w= -4
+	Result: 10
+	Result: 22
+	Result: 12
+	Result: 18
+	else
 </code>
