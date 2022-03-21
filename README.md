@@ -3,6 +3,11 @@ Hello everyone!I am building a simple interpreter for C language. So, project wi
 
 Link: https://ruslanspivak.com/lsbasi-part1/
 
+## Compilation
+For compile of this project on Linux use commands:
+
+<code>	mcs Interpreter.cs Node.cs Token.cs TokenTypes.cs Lexer.cs Parser.cs Program.cs && mono Interpreter.exe test.c </code>
+
 ## Simple C code for test
 
 ### Test 1
