@@ -143,10 +143,11 @@ namespace ConsoleProject
         {
             if (node.isCompound())
             {
-                if (node.getNodes().Length > 1 && node.getNodes()[0].isNode() && node.getNodes()[0].getOp().getValue() == "if")
+                if (node.getNodes().Length >= 1 && node.getNodes()[0].isNode() && node.getNodes()[0].getOp().getValue() == "if")
                 {
-                    foreach (Node n in node.getNodes())
+                    foreach (Node n in node.getNodes()){
                         interpretCode(n);
+                    }
                     codeAdd("cnt" + absoluteStage + ":");
                     absoluteStage++;
                 }
@@ -169,6 +170,7 @@ namespace ConsoleProject
                         if(sr != null)
                         {
                             codeAdd("mov eax, " + sr);
+                            //codeAdd("push eax");
                             //codeAdd("mov " + getVal(node.getLeft()) + ", " + sr);
                         }
                         codeAdd("mov " + getVal(node.getLeft()) + ", eax");
@@ -185,31 +187,30 @@ namespace ConsoleProject
                         {
                             codeAdd("mov eax, " + sl);
                         }
-                        else
-                        {
-                            codeAdd("push eax");
-                        }
+                        codeAdd("push eax");
 
                         string sr = getVal(node.getRight());
 
                         if (sr != null)
                         {
                             codeAdd("mov ebx, " + sr);
+                            //codeAdd("mov ebx, eax");
                         }
-                        else
-                        {
+                        else{
                             codeAdd("mov ebx, eax");
-                            codeAdd("push ebx");
                         }
-
-                        if (sr == null)
+                        //codeAdd("push ebx");
+                        codeAdd("pop eax");
+                        /*if (sr == null)
                         {
                             codeAdd("pop ebx");
                         }
                         if (sl == null)
                         {
                             codeAdd("pop eax");
-                        }
+                        }*/
+
+                        
 
                         if (node.getOp().getValue() == "+")
                         {
@@ -401,7 +402,7 @@ namespace ConsoleProject
                 }
 
                 Console.WriteLine("================\n\nExecute program:");
-                //ExecuteCommand("nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && ./interpreter");
+                ExecuteCommand("nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && ./interpreter");
 
                 //Console.WriteLine(Directory.GetCurrentDirectory());
 
@@ -414,7 +415,7 @@ namespace ConsoleProject
                 process.StartInfo = startInfo;
                 process.Start();*/
                 
-                var p = new Process
+                /*var p = new Process
                 {
                     StartInfo =
                  {
@@ -423,7 +424,7 @@ namespace ConsoleProject
                      Arguments = "/C nasm -f elf -g interpreter.asm && gcc -m32 interpreter.o -o interpreter && interpreter"
                  }
                 }.Start();
-
+                */
                 //Console.WriteLine(command);
 
                 //Process.Start("CMD.exe", command);

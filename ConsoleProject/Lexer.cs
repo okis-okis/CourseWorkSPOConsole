@@ -24,11 +24,13 @@ namespace ConsoleProject
         private String[] delimiter;
         private String id;
         private String[] systemWord;
+        private bool skip;
 
         public Lexer()
         {
             values = new List<String>();
             varNames = new List<Char>();
+            skip = false;
 
             id = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             systemWord = new String[]{
@@ -73,8 +75,6 @@ namespace ConsoleProject
             //1 Определить значение
             //Определение токенов
             findString(inputText);
-            //findNumbers(inputText);
-            //findId(inputText);
 
             List<String> cpValues = sortByLength(new List<String>(values));
 
@@ -268,8 +268,24 @@ namespace ConsoleProject
                         {
                             break;
                         }
+                        else if(line[i+1] == '*'){
+                            skip = true;
+                            i++;
+                            continue;
+                        }
                     }
-                    result += line[i];
+                    else if (line[i] == '*' && i + 1 < line.Length)
+                    {
+                        if(line[i+1] == '/' && skip){
+                            skip = false;
+                            i++;
+                            continue;
+                        }
+                    }
+
+                    if(!skip){
+                        result += line[i];
+                    }
                 }
             }
 
