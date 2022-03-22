@@ -1,5 +1,5 @@
 # CourseWorkSPOConsole
-Hello everyone!I am building a simple interpreter for C language. So, project wirted on C#. Main idea i get from Ruslan Spivak blog 
+Hello everyone!I am building a simple interpreter for C language. I used C# for write project. Main idea i get from Ruslan Spivak blog. I used IDE VS 2022. Version .NET Core is 3.1. Project developed for Windows and Linux.
 
 Link: https://ruslanspivak.com/lsbasi-part1/
 
@@ -12,13 +12,13 @@ For compile of this project on Linux use commands:
 
 ### Test 1
 	int main(){
-		int c = 1;				//1
+		int c = 1;		//1
 		printf("c= %d", c);
 		int t = (12+14-41)*2;	//-30
 		printf("t= %d", t);
-		int d= 4/2;				//2
+		int d= 4/2;		//2
 		int g = -1;
-		int w = -1-1-1-1;		//-4
+		int w = -1-1-1-1;	//-4
 		printf("d= %d", d);
 		printf("g= %d", g);
 		printf("w= %d", w);
