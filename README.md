@@ -1,4 +1,4 @@
-# CourseWorkSPOConsole
+# Onyx
 Hello everyone!I am building a simple interpreter for C language. I used C# for write project. Main idea i get from Ruslan Spivak blog. I used IDE VS 2022. Version .NET Core is 3.1. Project developed for Windows and Linux.
 
 Link: https://ruslanspivak.com/lsbasi-part1/
