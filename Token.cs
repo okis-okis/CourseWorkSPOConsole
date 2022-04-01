@@ -11,7 +11,7 @@ namespace Onyx
     {
         //Token value and token type
         private String token;
-        public TokenTypes tokenType;
+        private TokenTypes tokenType;
 
         //Constructor
         public Token(String token)
@@ -30,6 +30,13 @@ namespace Onyx
         public String getToken()
         {
             return this.token;
+        }
+
+        public void printTokenInfo()
+        {
+            Console.WriteLine("Token:");
+            Console.WriteLine("Words: " + getToken());
+            Console.WriteLine("Token id: " + getTokenType());
         }
     }
 }

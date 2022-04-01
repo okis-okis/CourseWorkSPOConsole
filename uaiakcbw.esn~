@@ -249,24 +249,9 @@ namespace Onyx
             }
         }
 
-        private string prepareText(String input)
+        public string prepareText(String input)
         {
-            return deleteSuperfluousSpaces(deleteNewLineChar(deleteComments(input)));
-        }
 
-        private string deleteNewLineChar(String input)
-        {
-            String result = "";
-            foreach(char c in input)
-            {
-                if(c == '\n' || c == '\t')
-                {
-                    result += ' ';
-                    continue;
-                }
-                result += c;
-            }
-            return result;
         }
 
         private String deleteSuperfluousSpaces(String input)
@@ -275,7 +260,11 @@ namespace Onyx
             int count = 0;
             foreach (Char c in input)
             {
-                if (c == ' ')
+                if (c == '\t')
+                {
+                    continue;
+                }
+                else if (c == ' ')
                 {
                     if (count == 0)
                     {

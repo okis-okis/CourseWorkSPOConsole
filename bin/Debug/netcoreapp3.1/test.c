@@ -1,7 +1,7 @@
 int main(){
-	int i = 5;
+	/*int i = 5;
 	float f = 4.4;
-	float p = 3.141591;
+	float p = 3.141591;*/asd
 	/*int c = 1;				//1
 	printf("c= %d", c);
 	int t = (12+14-41)*2;	//-30

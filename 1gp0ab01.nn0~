@@ -82,7 +82,7 @@ namespace Onyx
         public Lexer(String input) : this()
         {
             //Process of delete comments and superfluous
-            inputText = prepareText(input);
+            inputText = deleteSuperfluousSpaces(deleteComments(input));
         }
 
         //Public function for scan code
@@ -249,33 +249,17 @@ namespace Onyx
             }
         }
 
-        private string prepareText(String input)
-        {
-            return deleteSuperfluousSpaces(deleteNewLineChar(deleteComments(input)));
-        }
-
-        private string deleteNewLineChar(String input)
-        {
-            String result = "";
-            foreach(char c in input)
-            {
-                if(c == '\n' || c == '\t')
-                {
-                    result += ' ';
-                    continue;
-                }
-                result += c;
-            }
-            return result;
-        }
-
         private String deleteSuperfluousSpaces(String input)
         {
             String result = "";
             int count = 0;
             foreach (Char c in input)
             {
-                if (c == ' ')
+                if (c == '\t')
+                {
+                    continue;
+                }
+                else if (c == ' ')
                 {
                     if (count == 0)
                     {
@@ -361,7 +345,7 @@ namespace Onyx
                 if (new TokenDeclaration().isNumber(token.getToken()))
                 {
                     bool found = false;
-                    foreach (String val in getValues())
+                    foreach (String val in lex.getValues())
                     {
                         if (val.Equals(token.getToken()))
                         {
@@ -370,13 +354,13 @@ namespace Onyx
                     }
                     if (!found)
                     {
-                        addValue(token.getToken());
+                        lex.addValue(token.getToken());
                     }
                 }
                 else if (token.getTokenType() == TokenTypes.var)
                 {
                     bool found = false;
-                    foreach (Char var in getUsedVarNames())
+                    foreach (Char var in lex.getUsedVarNames())
                     {
                         if (var == token.getToken()[0])
                         {
@@ -385,7 +369,7 @@ namespace Onyx
                     }
                     if (!found)
                     {
-                        addVarName(token.getToken()[0]);
+                        lex.addVarName(token.getToken()[0]);
                     }
                 }
             }

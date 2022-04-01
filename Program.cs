@@ -30,15 +30,18 @@ namespace Onyx
             lex = new Lexer(input);
             Token[] tokenList = lex.scan();
 
-            findValues(tokenList);
-
             //Output result of lexical analysis
+            outputLexicalAnalysisResult(tokenList);
+        }
+
+        static void outputLexicalAnalysisResult(Token[] tokenList)
+        {
             List<Token> errorToken = new List<Token>();
             int error = 0;
 
             foreach (Token token in tokenList)
             {
-                printTokenInfo(token);
+                token.printTokenInfo();
 
                 if (token.getTokenType() == TokenTypes.NOP)
                 {
@@ -48,50 +51,19 @@ namespace Onyx
 
                 Console.WriteLine();
             }
-        }
 
-        static void printTokenInfo(Token token)
-        {
-            Console.WriteLine("Token:");
-            Console.WriteLine("Words: " + token.getToken());
-            Console.WriteLine("Token id: " + token.getTokenType());
-        }
-
-        static void findValues(Token[] tokens)
-        {
-            foreach (Token token in tokens)
+            if (error != 0)
             {
-                if (new TokenDeclaration().isNumber(token.getToken()))
+                Console.WriteLine("==========================");
+                Console.WriteLine("Error count: " + error);
+                foreach (Token token in errorToken)
                 {
-                    bool found = false;
-                    foreach (String val in lex.getValues())
-                    {
-                        if (val.Equals(token.getToken()))
-                        {
-                            found = true; break;
-                        }
-                    }
-                    if (!found)
-                    {
-                        lex.addValue(token.getToken());
-                    }
+                    token.printTokenInfo();
                 }
-                else if (token.getTokenType() == TokenTypes.var)
-                {
-                    bool found = false;
-                    foreach (Char var in lex.getUsedVarNames())
-                    {
-                        if (var == token.getToken()[0])
-                        {
-                            found = true; break;
-                        }
-                    }
-                    if (!found)
-                    {
-                        lex.addVarName(token.getToken()[0]);
-                    }
-                }
+
+                Environment.Exit(1);
             }
+            Console.WriteLine("Lexical analysis did successful");
         }
     }
 }
