@@ -1,0 +1,61 @@
+BITS 32
+
+section .data
+ns: db "", 10, 0
+negative: db "-%d", 0
+positiv: db "%d", 0
+fltOutput: db "%f", 0
+DAT0: db "", 0
+f: dd 0
+p: dd 0
+flt0 : dd 4.4
+flt1 : dd 3.141591
+
+section .text
+global _main
+extern _printf
+extern _scanf
+_main:
+finit
+
+xor eax, eax
+xor ebx, ebx
+xor ecx, ecx
+xor edx, edx
+
+fld dword [flt0]
+fstp dword [f]
+
+push dword DAT0
+call _printf
+add esp, 4
+
+fld dword[f]
+sub esp, 8
+fstp qword[esp]
+push fltOutput
+call _printf
+add esp, 12
+
+push dword ns
+call _printf
+add esp, 4
+
+fld dword [flt1]
+fstp dword [p]
+
+call _printf
+add esp, 4
+
+fld dword[p]
+sub esp, 8
+fstp qword[esp]
+push fltOutput
+call _printf
+add esp, 12
+
+push dword ns
+call _printf
+add esp, 4
+
+ret 0

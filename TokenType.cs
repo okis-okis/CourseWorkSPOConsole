@@ -74,47 +74,22 @@ namespace Onyx
 
         public bool isPlus(String token)
         {
-            if(token == "+")
-            {
-                return true;
-            }
-            
-            /*if (token.getToken().Length > 1)
-            {
-                return false;
-            }
-            if (isPlus(new Token(""+token.getToken()[0])))
-            {
-                return true;
-            }*/
-            return false;
+            return token == "+" ? true : false;
         }
 
         public bool isMinus(String token)
         {
-            if(token == "-")
-            {
-                return true;
-            }
-            return false;
+            return token == "-" ? true : false;
         }
 
         public bool isMul(String token)
         {
-            if (token == "*")
-            {
-                return true;
-            }
-            return false;
+            return token == "*" ? true : false;
         }
 
         public bool isDiv(String token)
         {
-            if (token == "-")
-            {
-                return true;
-            }
-            return false;
+            return token == "/" ? true : false;
         }
 
         public bool isOperator(String s)
@@ -186,6 +161,11 @@ namespace Onyx
 
         public Boolean isFloat(String s)
         {
+            if(s == null)
+            {
+                return false;
+            }
+
             float f;
 
             String temp = "";
@@ -211,7 +191,7 @@ namespace Onyx
 
         public Boolean isVarName(String s)
         {
-            if (s.Length == 1)
+            if (s != null && s.Length == 1)
             {
                 foreach (Char name in new Lexer().getVarNames())
                 {
@@ -239,7 +219,7 @@ namespace Onyx
 
         public Boolean isString(String s)
         {
-            if (s.Length > 1)
+            if (s!= null && s.Length > 1)
             {
                 if (s[0] == '"' && s[s.Length - 1] == '"')
                 {
@@ -251,19 +231,19 @@ namespace Onyx
 
         public TokenTypes getOperator(String s)
         {
-            if (isPlus(s[0]))
+            if (isPlus(s))
             {
                 return TokenTypes.plus;
             }
-            else if (isMinus(s[0]))
+            else if (isMinus(s))
             {
                 return TokenTypes.minus;
             }
-            else if (isMul(s[0]))
+            else if (isMul(s))
             {
                 return TokenTypes.mul;
             }
-            else if (isDiv(s[0]))
+            else if (isDiv(s))
             {
                 return TokenTypes.div;
             }
@@ -320,26 +300,6 @@ namespace Onyx
             {
                 return "NOP";
             }
-        }
-
-        public Boolean isPlus(char input)
-        {
-            return input == '+' ? true : false;
-        }
-
-        public Boolean isMinus(char input)
-        {
-            return input == '-' ? true : false;
-        }
-
-        public Boolean isMul(char input)
-        {
-            return input == '*' ? true : false;
-        }
-
-        public Boolean isDiv(char input)
-        {
-            return input == '/' ? true : false;
         }
     }
 }

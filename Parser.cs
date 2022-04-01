@@ -33,9 +33,9 @@ namespace Onyx
 
         //Private function for program exit
         //Using if find critical error
-        private void Error()
+        private void Error(String error)
         {
-            Console.Error.WriteLine("Error!");
+            Console.Error.WriteLine("Error! "+error);
             Environment.Exit(2);
         }
 
@@ -67,7 +67,7 @@ namespace Onyx
                         Node n = expr();
                         if (nextToken() == null)
                         {
-                            Error();
+                            Error("Not found RPAREN in factor.");
                         }
                         if (getNextToken().getToken().Length == 1 && currentToken().getToken()[0] == ')')
                         {
@@ -80,7 +80,7 @@ namespace Onyx
             {
                 if (nextToken() == null)
                 {
-                    Error();
+                    Error("In unary operation not found factor");
                 }
 
                 getNextToken();
@@ -95,7 +95,7 @@ namespace Onyx
             {
                 if (nextToken() == null)
                 {
-                    Error();
+                    Error("In unary operation not found factor");
                 }
                 getNextToken();
                 return factor();
@@ -105,7 +105,7 @@ namespace Onyx
                 return new Node(token);
             }
             //If not found need factor - anounse error
-            Error();
+            Error("Not found factor.");
             return null;
         }
 
@@ -155,7 +155,7 @@ namespace Onyx
                 }
                 else
                 {
-                    Error();
+                    Error("Token is not data type.");
                 }
             }
             return null;
@@ -176,14 +176,14 @@ namespace Onyx
                     {
                         if (str[1] == id)
                         {
-                            Error();
+                            Error("You already declarated variable "+id);
                         }
                     }
                     varDeclaration.Add(new String[] { type, id });
                 }
                 else
                 {
-                    Error();
+                    Error("Variable input expected");
                 }
             }
 
@@ -193,7 +193,7 @@ namespace Onyx
             {
                 return new Node(token);
             }
-            Error();
+            Error("Token is not var");
             return null;
         }
 
@@ -216,7 +216,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Expected symbol equal or semicolon.");
             }
             step();
             return new Node(left, op, expr());
@@ -244,7 +244,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Expected symbol LPAREN");
             }
 
             //if printf
@@ -270,7 +270,6 @@ namespace Onyx
                             }
                             procStr += c;
                         }
-                        values[i] = procStr;
                     }
                 }
                 left = new Node(new Token(procStr));
@@ -292,7 +291,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Expected symbol RPAREN or comma.");
             }
 
             right = new Node(currentToken());
@@ -304,18 +303,33 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Expected symbol RPAREN.");
             }
             return new Node(left, op, right);
         }
 
         //Public function return string array
-        public String[] getValues()
+        public String[] getStrings()
         {
             List<String> list = new List<String>();
             foreach (String s in values)
             {
                 if (s.Length > 1 && s[0] == '"')
+                {
+                    list.Add(s);
+                }
+            }
+            return list.ToArray();
+        }
+
+        //Public function return floats values from
+        //values array/list
+        public String[] getFloats()
+        {
+            List<String> list = new List<String>();
+            foreach (String s in values)
+            {
+                if (new Token(s).getTokenType() == TokenTypes.real)
                 {
                     list.Add(s);
                 }
@@ -352,7 +366,7 @@ namespace Onyx
                     }
                     else
                     {
-                        Error();
+                        Error("Expected symbol LPAREN.");
                     }
 
                     lp = expr();
@@ -373,7 +387,7 @@ namespace Onyx
                     }
                     else
                     {
-                        Error();
+                        Error("Expected symbol RPAREN.");
                     }
                 }
                 list.Add(new Node(left, op, compound()));
@@ -399,7 +413,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Exprected entry symbol like '>', '<', '>=', '<=', '==' or '!='.");
                 return null;
             }
         }
@@ -506,7 +520,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Compound: current token is null.");
             }
 
             return compound;
@@ -518,7 +532,7 @@ namespace Onyx
             List<Node> list = new List<Node>();
             if (currentToken() == null)
             {
-                Error();
+                Error("Program: current token is null.");
             }
 
             dataType();
@@ -532,7 +546,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Not found entry point.");
             }
 
             if (currentToken().getTokenType() == TokenTypes.delimiter && 
@@ -542,7 +556,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Program: expected symbol LPAREN.");
             }
 
             if (currentToken().getTokenType() == TokenTypes.delimiter && 
@@ -552,7 +566,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Program: expected symbol RPAREN.");
             }
 
             if (currentToken().getTokenType() == TokenTypes.delimiter && 
@@ -562,7 +576,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Program: expected symbol LBrace.");
             }
 
             list.Add(compound());
@@ -579,7 +593,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Program: not found return opeartion.");
             }
 
             factor();
@@ -592,7 +606,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Program: expected symbol semicolon.");
             }
 
             if (currentToken().getTokenType() == TokenTypes.delimiter && 
@@ -601,7 +615,7 @@ namespace Onyx
             }
             else
             {
-                Error();
+                Error("Program: expected symbol RBrace.");
             }
 
             return new Node(list.ToArray());
@@ -672,7 +686,7 @@ namespace Onyx
         {
             if (getNextToken() == null)
             {
-                Error();
+                Error("Next token is null.");
             }
         }
 
@@ -695,6 +709,15 @@ namespace Onyx
                 Console.WriteLine("Var: " + var[0] + " " + var[1]);
             }
 
+        }
+
+        public void outputValues()
+        {
+            Console.WriteLine("Declaration value: ");
+            foreach (String value in values)
+            {
+                Console.WriteLine(value);
+            }
         }
     }
 }

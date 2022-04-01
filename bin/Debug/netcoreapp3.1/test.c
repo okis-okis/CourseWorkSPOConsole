@@ -1,7 +1,17 @@
 int main(){
-	/*int i = 5;
+	//int i = 4/2;
+	int i=5;
+	
+	printf("%d", i);
+	
+	int p = i;
+	printf("%d", p);
+	
 	float f = 4.4;
-	float p = 3.141591;*/asd
+	printf("%f", f);
+	float d = 3.141591;
+	printf("%f", d);
+	
 	/*int c = 1;				//1
 	printf("c= %d", c);
 	int t = (12+14-41)*2;	//-30
@@ -18,12 +28,11 @@ int main(){
 	c = 7 + (((3 + 2)));	//12
 	//printf("Result: %d", g);
 	//printf("Result: %d", c);
-
-	
 	c = 6;
 	d = 5;
 	c = (c+1+2)*2;
 	printf("Result: %d", c);
+	
 	if (c < (d+1+2)*2) {
 		printf("c<d");
 	}
@@ -33,5 +42,6 @@ int main(){
 	else {
 		printf("else");
 	}*/
+	
 	return 0;
 }

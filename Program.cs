@@ -27,11 +27,26 @@ namespace Onyx
             //Read source code from test.c file
             String input = File.ReadAllText("test.c");
 
+            //Lexical analysis
             lex = new Lexer(input);
             Token[] tokenList = lex.scan();
 
             //Output result of lexical analysis
             outputLexicalAnalysisResult(tokenList);
+
+            //Syntax analysis
+            Parser parser = new Parser(tokenList, lex.getValues());
+            Node AST = parser.parse();
+            parser.outputVar();
+            parser.outputValues();
+
+            //Interpret code
+            Interpreter interpreter = new Interpreter(AST, 
+                                                      parser.getStrings(), 
+                                                      parser.getFloats(), 
+                                                      parser.getVarArray()
+                                                      );
+            interpreter.interpret();
         }
 
         static void outputLexicalAnalysisResult(Token[] tokenList)
