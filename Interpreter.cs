@@ -274,6 +274,39 @@ namespace Onyx
             return false;
         }
 
+        private bool isFloatNum(Node n)
+        {
+            if (n.isNode())
+            {
+                return isFloatNum(n.getLeft());
+            }
+
+            if (n.isToken())
+            {
+                return isFloatNum(n.getValue());
+            }
+
+            return false;
+        }
+
+        private bool isFloatNum(String val)
+        {
+            if(val == null)
+            {
+                return false;
+            }
+
+            foreach (String flt in usedFloats)
+            {
+                if (val == flt)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void interpretCode(Node node)
         {
             if (node.isCompound())
@@ -305,7 +338,10 @@ namespace Onyx
                         string sr = getVal(node.getRight());
                         if (isFloatVar(node.getLeft().getValue()))
                         {
-                            codeAdd("fld dword "+sr);
+                            if (node.getRight().isToken())
+                            {
+                                codeAdd("fld dword " + sr);
+                            }
                             codeAdd("fstp dword "+getVal(node.getLeft()));
                         }
                         else
@@ -323,43 +359,80 @@ namespace Onyx
                             node.getOp().getValue() == "*" ||
                             node.getOp().getValue() == "/")
                     {
+
                         string sl = getVal(node.getLeft());
 
-                        if (sl != null)
+                        if (isFloatNum(node.getLeft()) ||
+                            isFloatVar(node.getLeft().getValue())
+                            )
                         {
-                            codeAdd("mov eax, " + sl);
-                        }
-                        codeAdd("push eax");
+                            if (sl != null)
+                            {
+                                codeAdd("fld dword " + sl);
+                            }
+                            string sr = getVal(node.getRight());
 
-                        string sr = getVal(node.getRight());
+                            if(sr != null)
+                            {
+                                codeAdd("fld dword " + sr);
+                            }
 
-                        if (sr != null)
-                        {
-                            codeAdd("mov ebx, " + sr);
+                            if (node.getOp().getValue() == "+")
+                            {
+                                codeAdd("fadd");
+                            }
+                            else if (node.getOp().getValue() == "*")
+                            {
+                                codeAdd("fmul");
+                            }
+                            else if (node.getOp().getValue() == "/")
+                            {
+                                codeAdd("fdiv");
+                            }
+                            else
+                            {
+                                codeAdd("fsub");
+                            }
                         }
                         else
                         {
-                            codeAdd("mov ebx, eax");
-                        }
-                        codeAdd("pop eax");
 
-                        if (node.getOp().getValue() == "+")
-                        {
-                            codeAdd("add eax, ebx");
-                        }
-                        else if (node.getOp().getValue() == "*")
-                        {
-                            codeAdd("mul ebx");
-                        }
-                        else if (node.getOp().getValue() == "/")
-                        {
-                            codeAdd("mov edx, 0");
-                            codeAdd("mov ecx, ebx");
-                            codeAdd("div ecx");
-                        }
-                        else
-                        {
-                            codeAdd("sub eax, ebx");
+                            if (sl != null)
+                            {
+                                codeAdd("mov eax, " + sl);
+                            }
+                            codeAdd("push eax");
+
+                            string sr = getVal(node.getRight());
+
+                            if (sr != null)
+                            {
+                                codeAdd("mov ebx, " + sr);
+                            }
+                            else
+                            {
+                                codeAdd("mov ebx, eax");
+                            }
+                            codeAdd("pop eax");
+
+                            if (node.getOp().getValue() == "+")
+                            {
+                                codeAdd("add eax, ebx");
+                            }
+                            else if (node.getOp().getValue() == "*")
+                            {
+                                codeAdd("mul ebx");
+                            }
+                            else if (node.getOp().getValue() == "/")
+                            {
+                                codeAdd("mov edx, 0");
+                                codeAdd("mov ecx, ebx");
+                                codeAdd("div ecx");
+                            }
+                            else
+                            {
+                                codeAdd("sub eax, ebx");
+                            }
                         }
                         codeAdd("");
                     }
@@ -385,7 +458,8 @@ namespace Onyx
                         codeAdd("add esp, 4");
                         codeAdd("");
 
-                        if (isFloatVar(node.getRight().getValue()))
+                        if (node.getRight()!=null && 
+                            isFloatVar(node.getRight().getValue()))
                         {
                             codeAdd("fld dword" + getVal(node.getRight()));
                             codeAdd("sub esp, 8");
