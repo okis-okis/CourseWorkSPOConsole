@@ -20,7 +20,8 @@ namespace Onyx
         var = 8,
         sysWord = 9,
         delimiter = 10,
-        NOP = 11
+        point = 11,
+        NOP = 12
     }
 
     //Class token declaration consist function for token for define
@@ -54,10 +55,34 @@ namespace Onyx
             {
                 return TokenTypes.str;
             }
+            else if (isPoint(tokenValue))
+            {
+                return TokenTypes.point;
+            }
             else
             {
                 return TokenTypes.NOP;
             }
+        }
+
+        public bool isPoint(String token)
+        {
+            if(token==null||token.Length <= 1)
+            {
+                return false;
+            }
+            else if (token[token.Length-1]==':')
+            {
+                token = token.Substring(0, token.Length - 1);
+                int c = 'a';
+                int d = 'z';
+                if ((token[0] >= 'a' && token[0] <= 'z') ||
+                    (token[0] >= 'A' && token[0] <= 'Z'))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool isDataType(String token)

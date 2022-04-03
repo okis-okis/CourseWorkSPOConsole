@@ -1,6 +1,19 @@
 int main(){
-	//int i = 4/2;
-	int i=5;
+	
+	int i = 0;
+	point:
+	i = i+1;
+	printf("%i", i);
+	if(i<5){
+		goto point;
+	}
+	
+	
+	/*float f;
+	scanf("%f", f);
+	printf("%f", f);
+	*/
+	/*int i=5;
 	
 	printf("%d", i);
 	printf("Expected: 5");
@@ -130,6 +143,6 @@ int main(){
 		printf("else");
 		printf("Expected: true");
 	}
-	
+	*/
 	return 0;
 }

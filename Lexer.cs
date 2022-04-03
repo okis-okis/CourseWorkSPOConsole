@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace Onyx
 {
+
     //Interface of class for better module mobility
     interface ILexer
     {
@@ -29,6 +30,7 @@ namespace Onyx
         //Variables list
         private List<String> values;
         private List<Char> varNames;
+        private List<String> points;
 
         //Special symbols and words for tokenizer
         private String[] delimiter;
@@ -43,6 +45,8 @@ namespace Onyx
         {
             values = new List<String>();
             varNames = new List<Char>();
+            points = new List<String>();
+
             skip = false;
 
             id = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -134,7 +138,9 @@ namespace Onyx
                 }
 
                 //Check if end of token
-                if (inputText[i] == ' ' || inputText[i] == '\r' || inputText[i] == '\n')
+                if (inputText[i] == ' ' || 
+                    inputText[i] == '\r' || 
+                    inputText[i] == '\n')
                 {
                     if (temp != "" && temp != null)
                     {
@@ -184,7 +190,34 @@ namespace Onyx
 
             findValues(tokens.ToArray());
 
+            findPoints(tokens.ToArray());
+
             return tokens.ToArray();
+        }
+
+        public void findPoints(Token[] tokens)
+        {
+            foreach (Token token in tokens)
+            {
+                if(token.getTokenType() == TokenTypes.point)
+                {
+                    points.Add(token.getToken().Substring(0, token.getToken().Length-1));
+                }
+            }
+
+            foreach (Token token in tokens)
+            {
+                if (token.getTokenType() == TokenTypes.NOP)
+                {
+                    foreach(String point in points)
+                    {
+                        if(point == token.getToken())
+                        {
+                            token.setTokenType(TokenTypes.point);
+                        }
+                    }
+                }
+            }
         }
 
         //Private function for add value to table

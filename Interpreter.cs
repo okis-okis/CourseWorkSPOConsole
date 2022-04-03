@@ -488,11 +488,19 @@ namespace Onyx
                     else if (node.getOp().getValue() == "scanf")
                     {
                         codeAdd("push " + node.getRight().getValue());
-                        for (int i = 0; i < usedStrings.Length; i++)
+
+                        if (isFloatVar(node.getRight().getValue()))
                         {
-                            if (usedStrings[i] == node.getLeft().getValue())
+                            codeAdd("push fltOutput");
+                        }
+                        else
+                        {
+                            for (int i = 0; i < usedStrings.Length; i++)
                             {
-                                codeAdd("push dword DAT" + i);
+                                if (usedStrings[i] == node.getLeft().getValue())
+                                {
+                                    codeAdd("push dword DAT" + i);
+                                }
                             }
                         }
                         if (Win)
@@ -577,6 +585,10 @@ namespace Onyx
                     {
                         getVal(node.getRight());
                     }
+                    else if (node.getOp().getValue() == "goto")
+                    {
+                        codeAdd("jmp "+node.getLeft().getValue());
+                    }
                 }
             }
             else if (node.isToken())
@@ -590,6 +602,10 @@ namespace Onyx
                     addReturn();
                 }
                 else if (new TokenDeclaration().isNumber(node.getValue()))
+                {
+                    codeAdd(node.getValue());
+                }
+                else if (new TokenDeclaration().isPoint(node.getValue()))
                 {
                     codeAdd(node.getValue());
                 }

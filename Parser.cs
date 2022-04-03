@@ -418,6 +418,32 @@ namespace Onyx
             }
         }
 
+        //point = text:
+        private Node point()
+        {
+            if(currentToken().getTokenType() == TokenTypes.point)
+            {
+                Node node = new Node(currentToken());
+                return node;
+            }
+            Error("Token is not a point");
+            return null;
+        }
+
+        private Node gotoStatement()
+        {
+            if (currentToken().getTokenType() == TokenTypes.sysWord &&
+                currentToken().getToken() == "goto")
+            {
+                Node op = new Node(currentToken());
+                step();
+                Node left = new Node(currentToken());
+                return new Node(left, op, null);
+            }
+            Error("Operation is not defined");
+            return null;
+        }
+
         //statement = compound
         //          | assignState
         //          | inout
@@ -436,7 +462,8 @@ namespace Onyx
                 return compound();
             }
             else if (currentToken().getTokenType() == TokenTypes.sysWord && 
-                    (currentToken().getToken() == "printf" || currentToken().getToken() == "scanf"))
+                    (currentToken().getToken() == "printf" || 
+                    currentToken().getToken() == "scanf"))
             {
                 return inout();
             }
@@ -445,7 +472,16 @@ namespace Onyx
             {
                 return condition();
             }
-            return empty();
+            else if (currentToken().getTokenType() == TokenTypes.point)
+            {
+                return point();
+            }
+            else if (currentToken().getTokenType() == TokenTypes.sysWord &&
+                    currentToken().getToken() == "goto")
+            {
+                return gotoStatement();
+            }
+                return empty();
         }
 
         //Private function form list of statement
@@ -461,14 +497,17 @@ namespace Onyx
                 return list.ToArray();
             }
 
-            if (currentToken().getToken() != "return" && 
-                currentToken().getToken() != ";")
+            if (previousToken().getTokenType() != TokenTypes.point && 
+                currentToken().getToken() != "return" &&
+                currentToken().getToken() != ";" &&
+                currentToken().getToken() != "goto")
             {
                 step();
             }
 
             while (currentToken().getToken() == ";" || 
-                  (previousToken() != null && previousToken().getToken() == "}"))
+                  (previousToken() != null && previousToken().getToken() == "}") ||
+                  previousToken().getTokenType() == TokenTypes.point)
             {
                 if (currentToken().getToken() == "return" || 
                     nextToken() == null || 
@@ -477,7 +516,8 @@ namespace Onyx
                 {
                     break;
                 }
-                if (previousToken().getToken() != "}")
+                if (previousToken().getToken() != "}" &&
+                    previousToken().getTokenType() != TokenTypes.point)
                 {
                     step();
                 }
