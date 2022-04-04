@@ -255,3 +255,65 @@ Output
 	Expected: 18
 	else
 	Expected: true
+
+## Test 3
+
+	int main(){
+	
+	bool t = true AND false;
+	printf("%i", t);
+	bool r = true AND true;
+	printf("%i", r);
+	
+	bool z = true AND true AND true;
+	printf("%i", z);
+	
+	z = true AND false AND true;
+	printf("%i", z);
+	
+	z = true OR false;
+	printf("%i", z);
+	
+	z = true OR true;
+	printf("%i", z);
+	
+	z = false OR false;
+	printf("%i", z);
+	
+	z = false OR false OR false;
+	printf("%i", z);
+	
+	z = true OR false OR false;
+	printf("%i", z);
+	
+	z = (true AND (true OR false) AND (true AND true)) OR false;
+	printf("%i", z);
+	
+	z = NOT(true);
+	printf("%i", z);
+	
+	z = NOT(false);
+	printf("%i", z);
+	
+	t = true;
+	z = NOT(NOT(false));
+	printf("%i", z);
+	
+	return 0;
+	}
+	
+Output:
+
+	0
+	1
+	1
+	0
+	1
+	1
+	0
+	0
+	1
+	1
+	0
+	1
+	0
