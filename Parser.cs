@@ -50,6 +50,8 @@ namespace Onyx
             //         | REAL
             //         | LPAREN expr RPAREN
             //         | variable
+            //         | true
+            //         | false
 
             Token token = currentToken();
 
@@ -104,19 +106,35 @@ namespace Onyx
             {
                 return new Node(token);
             }
+            else if (token != null && (
+                     token.getToken() == "true" ||
+                     token.getToken() == "false"))
+            {
+                return new Node(token);
+            }
+            else if (token != null &&
+                     token.getToken() == "NOT")
+            {
+                return notStatement();
+            }
+            else if (isLogicValue())
+            {
+                return logicValue();
+            }
             //If not found need factor - anounse error
             Error("Not found factor.");
             return null;
         }
 
-        //term : factor((MUL | DIV) factor)
+        //term : factor((MUL | DIV | AND) factor)
         private Node term()
         {
             Node result = factor();
 
             while (nextToken() != null &&
                  (nextToken().getTokenType() == TokenTypes.mul ||
-                  nextToken().getTokenType() == TokenTypes.div))
+                  nextToken().getTokenType() == TokenTypes.div ||
+                  nextToken().getToken() == "AND"))
             {
                 step();
                 result = new Node(result, new Node(currentToken()), new Node());
@@ -126,14 +144,15 @@ namespace Onyx
             return result;
         }
 
-        //expr : term((PLUS | MINUS) term)
+        //expr : term((PLUS | MINUS | OR) term)
         private Node expr()
         {
             Node result = term();
 
             while (nextToken() != null &&
                   (nextToken().getTokenType() == TokenTypes.plus ||
-                  nextToken().getTokenType() == TokenTypes.minus))
+                  nextToken().getTokenType() == TokenTypes.minus ||
+                  nextToken().getToken() == "OR"))
             {
                 step();
                 result = new Node(result, new Node(currentToken()), new Node());
@@ -444,6 +463,91 @@ namespace Onyx
             return null;
         }
 
+        private bool isLogicVar()
+        {
+            if(currentToken() == null)
+            {
+                return false;
+            }
+            foreach(String[] var in varDeclaration)
+            {
+                if(var[0]=="bool" && var[1] == currentToken().getToken())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool isLogicValue()
+        {
+            if (currentToken() == null)
+            {
+                return false;
+            }
+            if (currentToken().getToken() == "true" ||
+                currentToken().getToken() == "false")
+            {
+                return true;
+            }
+            else if (isLogicVar())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private Node logicValue()
+        {
+            if(currentToken() == null)
+            {
+                Error("Current token is null");
+            }
+            if (currentToken().getToken() == "true" ||
+                currentToken().getToken() == "false")
+            {
+                return new Node(currentToken());
+            }
+            else if (isLogicVar())
+            {
+                return new Node(currentToken());
+            }
+            else
+            {
+                Error("Current token is't logical value");
+                return null;
+            }
+        }
+
+        private Node notStatement()
+        {
+            if(currentToken() == null)
+            {
+                Error("Current token is null");
+                return null;
+            }
+            if(currentToken().getToken() != "NOT")
+            {
+                Error("Current token is't \"NOT\" token");
+            }
+
+            Node op = new Node(currentToken());
+            step();
+            if(currentToken().getToken() != "(")
+            {
+                Error("NOT Statenent: Not found LPAREN.");
+            }
+            step();
+            Node left = expr();
+            step();
+            if (currentToken().getToken() != ")")
+            {
+                Error("NOT Statenent: Not found RPAREN.");
+            }
+            //step();
+            return new Node(left , op, null);
+        }
+
         //statement = compound
         //          | assignState
         //          | inout
@@ -480,6 +584,11 @@ namespace Onyx
                     currentToken().getToken() == "goto")
             {
                 return gotoStatement();
+            }
+            else if (currentToken() != null &&
+                     currentToken().getToken() == "NOT")
+            {
+                return notStatement();
             }
                 return empty();
         }
@@ -522,7 +631,8 @@ namespace Onyx
                     step();
                 }
                 list.Add(statement());
-                if (currentToken().getToken() != ";" && 
+                if (previousToken().getToken() != "}"&&
+                    currentToken().getToken() != ";" && 
                     currentToken().getToken() != "return")
                 {
                     step();

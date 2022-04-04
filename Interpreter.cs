@@ -37,6 +37,9 @@ namespace Onyx
         //Stage for if jump
         private Int16 stage;
 
+        //Stage for NOT jump
+        private Int16 nStage;
+
         //Absolute stage for if jump (else)
         private Int16 absoluteStage;
 
@@ -81,6 +84,7 @@ namespace Onyx
 
             Win = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             stage = 0;
+            nStage = 0;
             absoluteStage = 0;
             codeAdd("BITS 32");
         }
@@ -117,6 +121,16 @@ namespace Onyx
             for(int i=0;i<usedFloats.Length;i++)
             {
                 codeAdd("flt"+i+" : dd "+usedFloats[i]);
+            }
+
+            codeAdd("");
+            codeAdd("section .bss");
+            foreach (String[] var in this.vars)
+            {
+                if (var[0] == "bool")
+                {
+                    codeAdd(var[1] + ": resd 1");
+                }
             }
         }
 
@@ -202,6 +216,17 @@ namespace Onyx
             else if (n.isNode())
             {
                 interpretCode(n);
+            }
+            else if (n.isToken() && isLogical(n.getValue()))
+            {
+                if (n.getValue() == "true")
+                {
+                    return "1b";
+                }
+                else
+                {
+                    return "0b";
+                }
             }
             return n.getValue();
         }
@@ -305,6 +330,78 @@ namespace Onyx
             }
 
             return false;
+        }
+
+        private bool isLogical(String val)
+        {
+            if(val!=null && (val == "true" || val == "false"))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void andOperation(Node n)
+        {
+            String sr = getVal(n.getRight());
+
+            if (sr != null)
+            {
+                codeAdd("mov eax, " + sr);
+            }
+            codeAdd("mov ebx, eax");
+            codeAdd("push ebx");
+
+            String sl = getVal(n.getLeft());
+
+            codeAdd("pop ebx");
+            if(sl != null)
+            {
+                codeAdd("mov eax, " + sl);
+            }
+
+            codeAdd("AND eax, ebx");
+        }
+
+        private void orOperation(Node n)
+        {
+            String sr = getVal(n.getRight());
+
+            if (sr != null)
+            {
+                codeAdd("mov eax, " + sr);
+            }
+            codeAdd("mov ebx, eax");
+            codeAdd("push ebx");
+
+            String sl = getVal(n.getLeft());
+
+            codeAdd("pop ebx");
+            if (sl != null)
+            {
+                codeAdd("mov eax, " + sl);
+            }
+
+            codeAdd("OR eax, ebx");
+        }
+
+        private void notOperation(Node n)
+        {
+            String sl = getVal(n.getLeft());
+            if (sl != null) {
+                codeAdd("mov eax, " + sl);
+            }
+            codeAdd("NOT eax");
+            codeAdd("cmp eax, 1000000000000000000000000000000b");
+            codeAdd("jl nStage" + nStage);
+            codeAdd("");
+            codeAdd("mov ebx, 2");
+            codeAdd("sub eax, ebx");
+            codeAdd("");
+            codeAdd("nStage" + nStage + ":");
+            codeAdd("mov ebx, 2");
+            codeAdd("add eax, ebx");
+            nStage++;
         }
 
         private void interpretCode(Node node)
@@ -588,6 +685,18 @@ namespace Onyx
                     else if (node.getOp().getValue() == "goto")
                     {
                         codeAdd("jmp "+node.getLeft().getValue());
+                    }
+                    else if (node.getOp().getValue() == "AND")
+                    {
+                        andOperation(node);
+                    }
+                    else if (node.getOp().getValue() == "OR")
+                    {
+                        orOperation(node);
+                    }
+                    else if (node.getOp().getValue() == "NOT")
+                    {
+                        notOperation(node);
                     }
                 }
             }

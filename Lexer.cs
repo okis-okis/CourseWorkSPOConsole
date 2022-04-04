@@ -69,7 +69,10 @@ namespace Onyx
                 "NOT",
                 //Enter point
                 "main",
-                "return"
+                "return",
+                //Logical value
+                "true",
+                "false"
             };
             delimiter = new String[]{
                 ";", "==",">=",
