@@ -40,6 +40,12 @@ namespace Onyx
         //Stage for NOT jump
         private Int16 nStage;
 
+        //Stage for loop jump
+        private Int16 fStage;
+
+        //Stage for printf jump
+        private Int16 pStage;
+
         //Absolute stage for if jump (else)
         private Int16 absoluteStage;
 
@@ -85,6 +91,8 @@ namespace Onyx
             Win = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             stage = 0;
             nStage = 0;
+            fStage = 0;
+            pStage = 0;
             absoluteStage = 0;
             codeAdd("BITS 32");
         }
@@ -110,7 +118,7 @@ namespace Onyx
                 codeAdd("DAT" + i + ": db " + usedStrings[i] + ", 0");
             }
 
-            foreach(String[] var in this.vars)
+            foreach (String[] var in this.vars)
             {
                 if (var[0] == "int" || var[0] == "float")
                 {
@@ -118,9 +126,9 @@ namespace Onyx
                 }
             }
 
-            for(int i=0;i<usedFloats.Length;i++)
+            for (int i = 0; i < usedFloats.Length; i++)
             {
-                codeAdd("flt"+i+" : dd "+usedFloats[i]);
+                codeAdd("flt" + i + " : dd " + usedFloats[i]);
             }
 
             codeAdd("");
@@ -201,11 +209,11 @@ namespace Onyx
             }
             else if (new Token(n.getValue()).getTokenType() == TokenTypes.real)
             {
-                for(int i = 0; i < usedFloats.Length; i++)
+                for (int i = 0; i < usedFloats.Length; i++)
                 {
-                    if(usedFloats[i] == n.getValue())
+                    if (usedFloats[i] == n.getValue())
                     {
-                        return "[flt"+i+"]";
+                        return "[flt" + i + "]";
                     }
                 }
             }
@@ -253,7 +261,7 @@ namespace Onyx
         {
             codeAdd("mov ebx, 1000000000000000000000000000000b");
             codeAdd("cmp eax, ebx");
-            codeAdd("jl pos" + stage);
+            codeAdd("jl pos" + pStage);
             codeAdd("");
             codeAdd("xor eax, ebx");
             codeAdd("push eax");
@@ -267,9 +275,9 @@ namespace Onyx
                 codeAdd("call printf");
             }
             codeAdd("add esp, 8");
-            codeAdd("jmp con" + stage);
+            codeAdd("jmp fcon" + pStage);
             codeAdd("");
-            codeAdd("pos" + stage + ":");
+            codeAdd("pos" + pStage + ":");
             codeAdd("push eax");
             codeAdd("push dword positiv");
             if (Win)
@@ -282,15 +290,15 @@ namespace Onyx
             }
             codeAdd("add esp, 8");
             codeAdd("");
-            codeAdd("con" + stage + ":");
-            stage++;
+            codeAdd("fcon" + pStage + ":");
+            pStage++;
         }
 
         private bool isFloatVar(String var)
         {
-            foreach(String[] name in vars)
+            foreach (String[] name in vars)
             {
-                if(name[1] == var && name[0] == "float")
+                if (name[1] == var && name[0] == "float")
                 {
                     return true;
                 }
@@ -316,7 +324,7 @@ namespace Onyx
 
         private bool isFloatNum(String val)
         {
-            if(val == null)
+            if (val == null)
             {
                 return false;
             }
@@ -334,7 +342,7 @@ namespace Onyx
 
         private bool isLogical(String val)
         {
-            if(val!=null && (val == "true" || val == "false"))
+            if (val != null && (val == "true" || val == "false"))
             {
                 return true;
             }
@@ -355,7 +363,7 @@ namespace Onyx
             String sl = getVal(n.getLeft());
 
             codeAdd("pop ebx");
-            if(sl != null)
+            if (sl != null)
             {
                 codeAdd("mov eax, " + sl);
             }
@@ -404,11 +412,28 @@ namespace Onyx
             nStage++;
         }
 
+        private void forOperation(Node n)
+        {
+            interpretCode(n.getLeft().getNodes()[0]);
+            codeAdd("fStage"+fStage+":");
+
+            Token pnt = new Token("fStage" + fStage);
+            pnt.setTokenType(TokenTypes.point);
+            Node gt = new Node(new Node(pnt), new Node(new Token("goto")), null);
+
+            n.getLeft().getNodes()[1].getNodes()[0].getRight().getNodes()[2] = gt;
+
+            interpretCode(n.getLeft().getNodes()[1]);
+        }
+
         private void interpretCode(Node node)
         {
             if (node.isCompound())
             {
-                if (node.getNodes().Length >= 1 && node.getNodes()[0].isNode() && node.getNodes()[0].getOp().getValue() == "if")
+                if (node.getNodes().Length >= 1 && node.getNodes()[0].isNode() &&
+                    node.getNodes()[0]!=null&&
+                    node.getNodes()[0].getOp() != null &&
+                    node.getNodes()[0].getOp().getValue() == "if")
                 {
                     foreach (Node n in node.getNodes())
                     {
@@ -697,6 +722,10 @@ namespace Onyx
                     else if (node.getOp().getValue() == "NOT")
                     {
                         notOperation(node);
+                    }
+                    else if (node.getOp().getValue() == "for")
+                    {
+                        forOperation(node);
                     }
                 }
             }

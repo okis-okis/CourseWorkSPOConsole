@@ -97,6 +97,13 @@ namespace Onyx
             this.right = right;
         }
 
+        //Set left part of Node
+        //Using for operation create
+        public void setLeft(Node left)
+        {
+            this.left = left;
+        }
+
         //Return true if end = false
         //P.S. this Node not last of Node list
         public bool isNode()

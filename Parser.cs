@@ -548,6 +548,66 @@ namespace Onyx
             return new Node(left , op, null);
         }
 
+        private Node forStatement()
+        {
+            Node op = new Node(currentToken());
+            step();
+
+            if (currentToken().getToken() != "(")
+            {
+                Error("For statement: not found LPAREN");
+            }
+            step();
+
+            Node[] left = new Node[2];
+
+            left[0] = assignState();
+
+            step();
+
+            if (currentToken().getToken() != ";")
+            {
+                Error("For statement: not found LPAREN");
+            }
+            step();
+
+            Node lp = null, opc = null, rp = null;
+            lp = expr();
+            step();
+            opc = equalSymbol();
+            rp = expr();
+            
+            left[1] = new Node(new Node[] { new Node(new Node(lp, opc, rp), new Node(new Token("if")), new Node()) });
+
+            step();
+            if (currentToken().getToken() != ";")
+            {
+                Error("For statement: not found LPAREN");
+            }
+            step();
+
+            Node[] list = new Node[3];
+
+            list[1] = assignState();
+            step();
+            if (currentToken().getToken() != ")")
+            {
+                Error("For statement: not found RPAREN");
+            }
+            step();
+
+            
+            list[0] = compound();
+            list[2] = null;
+
+            left[1].getNodes()[0].setRight(new Node(list));
+
+            //Node[] temp = new Node[]{new Node(left), new Node(new Node(new Node(lp, opc, rp), new Node(new Token("if")), null), op, null)};
+            Node result = new Node(new Node(left), op, null);
+
+            return result;
+        }
+
         //statement = compound
         //          | assignState
         //          | inout
@@ -556,7 +616,8 @@ namespace Onyx
         private Node statement()
         {
             if (new TokenDeclaration().isDataType(currentToken().getToken()) || 
-                currentToken().getTokenType() == TokenTypes.var)
+                (currentToken().getTokenType() == TokenTypes.var &&
+                 nextToken().getToken() == "="))
             {
                 return assignState();
             }
@@ -589,6 +650,11 @@ namespace Onyx
                      currentToken().getToken() == "NOT")
             {
                 return notStatement();
+            }
+            else if (currentToken() != null &&
+                     currentToken().getToken() == "for")
+            {
+                return forStatement();
             }
                 return empty();
         }

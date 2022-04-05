@@ -1,7 +1,13 @@
 int main(){
 	
-	bool t = true AND false;
-	printf("%i", t);
+	int i;
+	
+	for(i=0;i<10;i = i+1){
+		printf("%i", i);
+	}
+	
+	/*bool l = true AND false;
+	printf("%i", l);
 	bool r = true AND true;
 	printf("%i", r);
 	
@@ -35,13 +41,11 @@ int main(){
 	z = NOT(false);
 	printf("%i", z);
 	
-	t = true;
+	l = true;
 	z = NOT(NOT(false));
 	printf("%i", z);
 	
-	//bool n = ((true AND false) OR false) AND NOT(true)
-	
-	/*float f;
+	float f;
 	scanf("%f", f);
 	printf("%f", f);
 	
@@ -128,8 +132,8 @@ int main(){
 	printf("c= %d", c);
 	printf("Expected: 1");
 	
-	int z = (12+14-41)*2;	//-30
-	printf("t= %d", z);
+	int y = (12+14-41)*2;	//-30
+	printf("t= %d", y);
 	printf("Expected: -30");
 	
 	int v= 4/2;				//2
@@ -183,7 +187,7 @@ int main(){
 	if(i<5){
 		goto point;
 	}
-	printf("Ok");*/
-	
+	printf("Ok");
+	*/
 	return 0;
 }
