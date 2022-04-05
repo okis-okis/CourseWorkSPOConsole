@@ -294,6 +294,8 @@ namespace Onyx
             pStage++;
         }
 
+        //Check if variable type is float, thet
+        //return true. Else return false
         private bool isFloatVar(String var)
         {
             foreach (String[] name in vars)
@@ -307,6 +309,8 @@ namespace Onyx
             return false;
         }
 
+        //Check if value data type is float
+        //Get Node for check
         private bool isFloatNum(Node n)
         {
             if (n.isNode())
@@ -322,6 +326,8 @@ namespace Onyx
             return false;
         }
 
+        //Check if value data type is float
+        //Get STRING for check
         private bool isFloatNum(String val)
         {
             if (val == null)
@@ -340,6 +346,7 @@ namespace Onyx
             return false;
         }
 
+        //Check value type is logical
         private bool isLogical(String val)
         {
             if (val != null && (val == "true" || val == "false"))
@@ -349,6 +356,7 @@ namespace Onyx
             return false;
         }
 
+        //Interpret AND operation
         private void andOperation(Node n)
         {
             String sr = getVal(n.getRight());
@@ -371,6 +379,7 @@ namespace Onyx
             codeAdd("AND eax, ebx");
         }
 
+        //Interpret OR operation
         private void orOperation(Node n)
         {
             String sr = getVal(n.getRight());
@@ -393,6 +402,7 @@ namespace Onyx
             codeAdd("OR eax, ebx");
         }
 
+        //Interpret NOT operation
         private void notOperation(Node n)
         {
             String sl = getVal(n.getLeft());
@@ -412,6 +422,7 @@ namespace Onyx
             nStage++;
         }
 
+        //Interpret loop FOR operation
         private void forOperation(Node n)
         {
             interpretCode(n.getLeft().getNodes()[0]);
@@ -426,6 +437,8 @@ namespace Onyx
             interpretCode(n.getLeft().getNodes()[1]);
         }
 
+        //Main function for interpret AST to
+        //NASM code
         private void interpretCode(Node node)
         {
             if (node.isCompound())

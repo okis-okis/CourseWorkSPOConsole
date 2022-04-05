@@ -264,6 +264,7 @@ namespace Onyx
             return varNames.ToArray();
         }
 
+        //Function find strings in code and add to string list
         private void findString(String input)
         {
             String[] arr = input.Split('\"');
@@ -285,11 +286,13 @@ namespace Onyx
             }
         }
 
+        //Function for code prepare (delete superfluous, new lines and comments)
         private string prepareText(String input)
         {
             return deleteSuperfluousSpaces(deleteNewLineChar(deleteComments(input)));
         }
 
+        //Function for delete new lines from source code
         private string deleteNewLineChar(String input)
         {
             String result = "";
@@ -305,6 +308,7 @@ namespace Onyx
             return result;
         }
 
+        //Function for delete superfluous spaces from source code
         private String deleteSuperfluousSpaces(String input)
         {
             String result = "";
@@ -331,6 +335,7 @@ namespace Onyx
             return result;
         }
 
+        //Function for delete comments from source code
         private String deleteComments(String input)
         {
             String result = "";
@@ -372,6 +377,8 @@ namespace Onyx
             return result;
         }
 
+        //Function return sorted by length array. Need for
+        //need for exact string finding
         private List<String> sortByLength(List<String> arr)
         {
             for (int i = 0; i < arr.Count; i++)
@@ -390,7 +397,8 @@ namespace Onyx
             return arr;
         }
 
-        void findValues(Token[] tokens)
+        //Function for define values from source code
+        private void findValues(Token[] tokens)
         {
             foreach (Token token in tokens)
             {

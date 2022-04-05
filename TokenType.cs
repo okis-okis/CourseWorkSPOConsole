@@ -28,6 +28,7 @@ namespace Onyx
     //token type and other
     class TokenDeclaration
     {
+        //Function for define type of token
         public TokenTypes getTokenType(String tokenValue)
         {
             //Define token type
@@ -65,6 +66,7 @@ namespace Onyx
             }
         }
 
+        //Check token value is point
         public bool isPoint(String token)
         {
             if(token==null||token.Length <= 1)
@@ -85,38 +87,45 @@ namespace Onyx
             return false;
         }
 
+        //Check token value is data type
+        //Data types: int, float, bool
         public bool isDataType(String token)
         {
             if (token == "int" ||
             token == "float" ||
-            token == "bool" ||
-            token == "double")
+            token == "bool")
             {
                 return true;
             }
             return false;
         }
 
+        //Check token value is + operation
         public bool isPlus(String token)
         {
             return token == "+" ? true : false;
         }
 
+        //Check token value is - operation
         public bool isMinus(String token)
         {
             return token == "-" ? true : false;
         }
 
+        //Check token value is mul(*) operation
         public bool isMul(String token)
         {
             return token == "*" ? true : false;
         }
 
+        //Check token value is div(/) operation
         public bool isDiv(String token)
         {
             return token == "/" ? true : false;
         }
 
+        //Check token value is operator
+        //Operators: +, -, *, /
         public bool isOperator(String s)
         {
             if (s == null || s == "" || s.Length > 1)
@@ -142,6 +151,7 @@ namespace Onyx
             return false;
         }
 
+        //Check token value is float or int number
         public bool isNumber(String s)
         {
             if (isInt(s) || isFloat(s))
@@ -151,6 +161,8 @@ namespace Onyx
             return false;
         }
 
+        //Return type of token if token value is
+        //integer or float number
         public TokenTypes getNumber(String s)
         {
             if (isNumber(s))
@@ -167,6 +179,7 @@ namespace Onyx
             return TokenTypes.NOP;
         }
 
+        //Check token value is integer
         public Boolean isInt(String s)
         {
             try
@@ -184,6 +197,7 @@ namespace Onyx
             return false;
         }
 
+        //Check token value is float
         public Boolean isFloat(String s)
         {
             if(s == null)
@@ -202,6 +216,7 @@ namespace Onyx
             return float.TryParse(temp, out f);
         }
 
+        //Check token value is system word
         public Boolean isSystemWord(String s)
         {
             foreach (String word in new Lexer().getSystemWords())
@@ -214,6 +229,7 @@ namespace Onyx
             return false;
         }
 
+        //Check token value is var name
         public Boolean isVarName(String s)
         {
             if (s != null && s.Length == 1)
@@ -229,6 +245,7 @@ namespace Onyx
             return false;
         }
 
+        //Check token value is delimiter
         public Boolean isDelimiter(String s)
         {
             foreach (String del in new Lexer().getDelimiter())
@@ -242,6 +259,7 @@ namespace Onyx
             return false;
         }
 
+        //Check token value is string
         public Boolean isString(String s)
         {
             if (s!= null && s.Length > 1)
@@ -254,6 +272,8 @@ namespace Onyx
             return false;
         }
 
+        //Return type of token if token value is
+        //operator
         public TokenTypes getOperator(String s)
         {
             if (isPlus(s))
@@ -275,6 +295,8 @@ namespace Onyx
             return 0;
         }
 
+        //Return string with token type
+        //Used for output token type to console/terminal
         public String getTokenType(TokenTypes tokenType)
         {
             if (tokenType == TokenTypes.plus)

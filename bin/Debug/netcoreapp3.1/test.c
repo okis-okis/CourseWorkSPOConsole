@@ -1,12 +1,6 @@
 int main(){
 	
-	int i;
-	
-	for(i=0;i<10;i = i+1){
-		printf("%i", i);
-	}
-	
-	/*bool l = true AND false;
+	bool l = true AND false;
 	printf("%i", l);
 	bool r = true AND true;
 	printf("%i", r);
@@ -188,6 +182,11 @@ int main(){
 		goto point;
 	}
 	printf("Ok");
-	*/
+	
+	
+	for(i=0;i<10;i = i+2){
+		printf("%i", i);
+	}
+	
 	return 0;
 }

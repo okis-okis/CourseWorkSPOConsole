@@ -449,6 +449,7 @@ namespace Onyx
             return null;
         }
 
+        //gotoStatement = goto point:
         private Node gotoStatement()
         {
             if (currentToken().getTokenType() == TokenTypes.sysWord &&
@@ -463,6 +464,9 @@ namespace Onyx
             return null;
         }
 
+        //private function thet check var type
+        //if var type is bool, then return true
+        //else will return false
         private bool isLogicVar()
         {
             if(currentToken() == null)
@@ -479,6 +483,9 @@ namespace Onyx
             return false;
         }
 
+        //private function thet check value type
+        //if value is "true" or "false", then return true
+        //else return false
         private bool isLogicValue()
         {
             if (currentToken() == null)
@@ -497,6 +504,8 @@ namespace Onyx
             return false;
         }
 
+        //return Node with logic value, thet
+        //may be a var or a value
         private Node logicValue()
         {
             if(currentToken() == null)
@@ -519,6 +528,7 @@ namespace Onyx
             }
         }
 
+        //notStatement = NOT(expr)
         private Node notStatement()
         {
             if(currentToken() == null)
@@ -544,10 +554,10 @@ namespace Onyx
             {
                 Error("NOT Statenent: Not found RPAREN.");
             }
-            //step();
             return new Node(left , op, null);
         }
 
+        //forStatemtn = for(assignState;expr equalSymbol expr;assignState)compound
         private Node forStatement()
         {
             Node op = new Node(currentToken());
@@ -612,6 +622,10 @@ namespace Onyx
         //          | assignState
         //          | inout
         //          | condition
+        //          | point
+        //          | gotoStatement
+        //          | notStatement
+        //          | forStatement
         //          | empty
         private Node statement()
         {
@@ -708,7 +722,7 @@ namespace Onyx
             return list.ToArray();
         }
 
-        //compound = { statementList }
+        //compound = { statementList } | statenentList
         private Node compound()
         {
             Node compound = null;
@@ -927,6 +941,7 @@ namespace Onyx
 
         }
 
+        //Output of used in source code values
         public void outputValues()
         {
             Console.WriteLine("Declaration value: ");
