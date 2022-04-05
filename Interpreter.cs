@@ -786,18 +786,6 @@ namespace Onyx
                     fs.Write(info, 0, info.Length);
                 }
 
-                // Open the stream and read it back.
-                using (StreamReader sr = File.OpenText("interpreter.asm"))
-                {
-                    string s = "";
-                    while ((s = sr.ReadLine()) != null)
-                    {
-                        Console.WriteLine(s);
-                    }
-                }
-
-                Console.WriteLine("================\n\nExecute program:");
-
                 if (Win)
                 {
                     var p = new Process

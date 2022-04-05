@@ -32,13 +32,15 @@ namespace Onyx
             Token[] tokenList = lex.scan();
 
             //Output result of lexical analysis
-            outputLexicalAnalysisResult(tokenList);
+            //outputLexicalAnalysisResult(tokenList);
 
             //Syntax analysis
             Parser parser = new Parser(tokenList, lex.getValues());
             Node AST = parser.parse();
-            parser.outputVar();
-            parser.outputValues();
+            //parser.outputVar();
+            //parser.outputValues();
+
+            //new RPN().outputPOLYZ(AST);
 
             //Interpret code
             Interpreter interpreter = new Interpreter(AST, 
