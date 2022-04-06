@@ -1,5 +1,48 @@
 int main(){
-	//int i = 4/2;
+	
+	bool l = true AND false;
+	printf("%i", l);
+	bool r = true AND true;
+	printf("%i", r);
+	
+	bool z = true AND true AND true;
+	printf("%i", z);
+	
+	z = true AND false AND true;
+	printf("%i", z);
+	
+	z = true OR false;
+	printf("%i", z);
+	
+	z = true OR true;
+	printf("%i", z);
+	
+	z = false OR false;
+	printf("%i", z);
+	
+	z = false OR false OR false;
+	printf("%i", z);
+	
+	z = true OR false OR false;
+	printf("%i", z);
+	
+	z = (true AND (true OR false) AND (true AND true)) OR false;
+	printf("%i", z);
+	
+	z = NOT(true);
+	printf("%i", z);
+	
+	z = NOT(false);
+	printf("%i", z);
+	
+	l = true;
+	z = NOT(NOT(false));
+	printf("%i", z);
+	
+	float f;
+	scanf("%f", f);
+	printf("%f", f);
+	
 	int i=5;
 	
 	printf("%d", i);
@@ -83,8 +126,8 @@ int main(){
 	printf("c= %d", c);
 	printf("Expected: 1");
 	
-	int z = (12+14-41)*2;	//-30
-	printf("t= %d", z);
+	int y = (12+14-41)*2;	//-30
+	printf("t= %d", y);
 	printf("Expected: -30");
 	
 	int v= 4/2;				//2
@@ -105,9 +148,11 @@ int main(){
 	printf("Expected: 10");
 	
 	g = 7 + 3 * (10 / (12 / (3 + 1) - 1));	//22
+	printf("Result: %d", g);
 	printf("Expected: 22");
 	
 	c = 7 + (((3 + 2)));	//12
+	printf("Result: %d", c);
 	printf("Expected: 12");
 	
 	c = 6;
@@ -128,6 +173,20 @@ int main(){
 		printf("else");
 		printf("Expected: true");
 	}
+	
+	i = 0;
+	point:
+	i = i+1;
+	printf("%i", i);
+	if(i<5){
+		goto point;
+	}
+	printf("Ok");
+	
+	for(i=0;i<10;i = i+1){
+		printf("%i", i);
+	}
+	
 	
 	return 0;
 }

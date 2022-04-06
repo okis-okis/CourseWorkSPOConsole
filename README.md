@@ -1,8 +1,10 @@
 # Onyx
-Hello everyone!I am building a simple interpreter for C language. I used C# for write project. Main idea i get from Ruslan Spivak blog. I used IDE VS 2022. Version .NET Core is 3.1. Project developed for Windows and Linux.
+Hello everyone!I am building a simple interpreter for C language. I used ASP.NET and MVC pattern. Main idea i get from Ruslan Spivak blog. I used IDE VS 2022. Version .NET Core is 3.1. Project developed for Windows and Linux.
 
 Link: https://ruslanspivak.com/lsbasi-part1/
-
+## Application
+![Screen](https://i.ibb.co/pj5h3Tk/project-Interface.jpg)
+## Core
 ## Compilation
 For compile of this project on Linux use commands:
 
@@ -255,3 +257,90 @@ Output
 	Expected: 18
 	else
 	Expected: true
+
+## Test 3
+
+	int main(){
+	
+	bool t = true AND false;
+	printf("%i", t);
+	bool r = true AND true;
+	printf("%i", r);
+	
+	bool z = true AND true AND true;
+	printf("%i", z);
+	
+	z = true AND false AND true;
+	printf("%i", z);
+	
+	z = true OR false;
+	printf("%i", z);
+	
+	z = true OR true;
+	printf("%i", z);
+	
+	z = false OR false;
+	printf("%i", z);
+	
+	z = false OR false OR false;
+	printf("%i", z);
+	
+	z = true OR false OR false;
+	printf("%i", z);
+	
+	z = (true AND (true OR false) AND (true AND true)) OR false;
+	printf("%i", z);
+	
+	z = NOT(true);
+	printf("%i", z);
+	
+	z = NOT(false);
+	printf("%i", z);
+	
+	t = true;
+	z = NOT(NOT(false));
+	printf("%i", z);
+	
+	return 0;
+	}
+	
+Output:
+
+	0
+	1
+	1
+	0
+	1
+	1
+	0
+	0
+	1
+	1
+	0
+	1
+	0
+
+## Test 4
+
+	int main(){
+	
+	int i;
+	
+	for(i=0;i<10;i = i+1){
+		printf("%i", i);
+	}
+	return 0;
+	}
+
+Output:
+
+	0
+	1
+	2
+	3
+	4
+	5
+	6
+	7
+	8
+	9

@@ -37,6 +37,15 @@ namespace Onyx
         //Stage for if jump
         private Int16 stage;
 
+        //Stage for NOT jump
+        private Int16 nStage;
+
+        //Stage for loop jump
+        private Int16 fStage;
+
+        //Stage for printf jump
+        private Int16 pStage;
+
         //Absolute stage for if jump (else)
         private Int16 absoluteStage;
 
@@ -81,6 +90,9 @@ namespace Onyx
 
             Win = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             stage = 0;
+            nStage = 0;
+            fStage = 0;
+            pStage = 0;
             absoluteStage = 0;
             codeAdd("BITS 32");
         }
@@ -106,7 +118,7 @@ namespace Onyx
                 codeAdd("DAT" + i + ": db " + usedStrings[i] + ", 0");
             }
 
-            foreach(String[] var in this.vars)
+            foreach (String[] var in this.vars)
             {
                 if (var[0] == "int" || var[0] == "float")
                 {
@@ -114,9 +126,19 @@ namespace Onyx
                 }
             }
 
-            for(int i=0;i<usedFloats.Length;i++)
+            for (int i = 0; i < usedFloats.Length; i++)
             {
-                codeAdd("flt"+i+" : dd "+usedFloats[i]);
+                codeAdd("flt" + i + " : dd " + usedFloats[i]);
+            }
+
+            codeAdd("");
+            codeAdd("section .bss");
+            foreach (String[] var in this.vars)
+            {
+                if (var[0] == "bool")
+                {
+                    codeAdd(var[1] + ": resd 1");
+                }
             }
         }
 
@@ -187,11 +209,11 @@ namespace Onyx
             }
             else if (new Token(n.getValue()).getTokenType() == TokenTypes.real)
             {
-                for(int i = 0; i < usedFloats.Length; i++)
+                for (int i = 0; i < usedFloats.Length; i++)
                 {
-                    if(usedFloats[i] == n.getValue())
+                    if (usedFloats[i] == n.getValue())
                     {
-                        return "[flt"+i+"]";
+                        return "[flt" + i + "]";
                     }
                 }
             }
@@ -202,6 +224,17 @@ namespace Onyx
             else if (n.isNode())
             {
                 interpretCode(n);
+            }
+            else if (n.isToken() && isLogical(n.getValue()))
+            {
+                if (n.getValue() == "true")
+                {
+                    return "1b";
+                }
+                else
+                {
+                    return "0b";
+                }
             }
             return n.getValue();
         }
@@ -228,7 +261,7 @@ namespace Onyx
         {
             codeAdd("mov ebx, 1000000000000000000000000000000b");
             codeAdd("cmp eax, ebx");
-            codeAdd("jl pos" + stage);
+            codeAdd("jl pos" + pStage);
             codeAdd("");
             codeAdd("xor eax, ebx");
             codeAdd("push eax");
@@ -242,9 +275,9 @@ namespace Onyx
                 codeAdd("call printf");
             }
             codeAdd("add esp, 8");
-            codeAdd("jmp con" + stage);
+            codeAdd("jmp fcon" + pStage);
             codeAdd("");
-            codeAdd("pos" + stage + ":");
+            codeAdd("pos" + pStage + ":");
             codeAdd("push eax");
             codeAdd("push dword positiv");
             if (Win)
@@ -257,15 +290,17 @@ namespace Onyx
             }
             codeAdd("add esp, 8");
             codeAdd("");
-            codeAdd("con" + stage + ":");
-            stage++;
+            codeAdd("fcon" + pStage + ":");
+            pStage++;
         }
 
+        //Check if variable type is float, thet
+        //return true. Else return false
         private bool isFloatVar(String var)
         {
-            foreach(String[] name in vars)
+            foreach (String[] name in vars)
             {
-                if(name[1] == var && name[0] == "float")
+                if (name[1] == var && name[0] == "float")
                 {
                     return true;
                 }
@@ -274,6 +309,8 @@ namespace Onyx
             return false;
         }
 
+        //Check if value data type is float
+        //Get Node for check
         private bool isFloatNum(Node n)
         {
             if (n.isNode())
@@ -289,9 +326,11 @@ namespace Onyx
             return false;
         }
 
+        //Check if value data type is float
+        //Get STRING for check
         private bool isFloatNum(String val)
         {
-            if(val == null)
+            if (val == null)
             {
                 return false;
             }
@@ -307,11 +346,107 @@ namespace Onyx
             return false;
         }
 
+        //Check value type is logical
+        private bool isLogical(String val)
+        {
+            if (val != null && (val == "true" || val == "false"))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        //Interpret AND operation
+        private void andOperation(Node n)
+        {
+            String sr = getVal(n.getRight());
+
+            if (sr != null)
+            {
+                codeAdd("mov eax, " + sr);
+            }
+            codeAdd("mov ebx, eax");
+            codeAdd("push ebx");
+
+            String sl = getVal(n.getLeft());
+
+            codeAdd("pop ebx");
+            if (sl != null)
+            {
+                codeAdd("mov eax, " + sl);
+            }
+
+            codeAdd("AND eax, ebx");
+        }
+
+        //Interpret OR operation
+        private void orOperation(Node n)
+        {
+            String sr = getVal(n.getRight());
+
+            if (sr != null)
+            {
+                codeAdd("mov eax, " + sr);
+            }
+            codeAdd("mov ebx, eax");
+            codeAdd("push ebx");
+
+            String sl = getVal(n.getLeft());
+
+            codeAdd("pop ebx");
+            if (sl != null)
+            {
+                codeAdd("mov eax, " + sl);
+            }
+
+            codeAdd("OR eax, ebx");
+        }
+
+        //Interpret NOT operation
+        private void notOperation(Node n)
+        {
+            String sl = getVal(n.getLeft());
+            if (sl != null) {
+                codeAdd("mov eax, " + sl);
+            }
+            codeAdd("NOT eax");
+            codeAdd("cmp eax, 1000000000000000000000000000000b");
+            codeAdd("jl nStage" + nStage);
+            codeAdd("");
+            codeAdd("mov ebx, 2");
+            codeAdd("sub eax, ebx");
+            codeAdd("");
+            codeAdd("nStage" + nStage + ":");
+            codeAdd("mov ebx, 2");
+            codeAdd("add eax, ebx");
+            nStage++;
+        }
+
+        //Interpret loop FOR operation
+        private void forOperation(Node n)
+        {
+            interpretCode(n.getLeft().getNodes()[0]);
+            codeAdd("fStage"+fStage+":");
+
+            Token pnt = new Token("fStage" + fStage);
+            pnt.setTokenType(TokenTypes.point);
+            Node gt = new Node(new Node(pnt), new Node(new Token("goto")), null);
+
+            n.getLeft().getNodes()[1].getNodes()[0].getRight().getNodes()[2] = gt;
+
+            interpretCode(n.getLeft().getNodes()[1]);
+        }
+
+        //Main function for interpret AST to
+        //NASM code
         private void interpretCode(Node node)
         {
             if (node.isCompound())
             {
-                if (node.getNodes().Length >= 1 && node.getNodes()[0].isNode() && node.getNodes()[0].getOp().getValue() == "if")
+                if (node.getNodes().Length >= 1 && node.getNodes()[0].isNode() &&
+                    node.getNodes()[0]!=null&&
+                    node.getNodes()[0].getOp() != null &&
+                    node.getNodes()[0].getOp().getValue() == "if")
                 {
                     foreach (Node n in node.getNodes())
                     {
@@ -488,11 +623,19 @@ namespace Onyx
                     else if (node.getOp().getValue() == "scanf")
                     {
                         codeAdd("push " + node.getRight().getValue());
-                        for (int i = 0; i < usedStrings.Length; i++)
+
+                        if (isFloatVar(node.getRight().getValue()))
                         {
-                            if (usedStrings[i] == node.getLeft().getValue())
+                            codeAdd("push fltOutput");
+                        }
+                        else
+                        {
+                            for (int i = 0; i < usedStrings.Length; i++)
                             {
-                                codeAdd("push dword DAT" + i);
+                                if (usedStrings[i] == node.getLeft().getValue())
+                                {
+                                    codeAdd("push dword DAT" + i);
+                                }
                             }
                         }
                         if (Win)
@@ -577,6 +720,26 @@ namespace Onyx
                     {
                         getVal(node.getRight());
                     }
+                    else if (node.getOp().getValue() == "goto")
+                    {
+                        codeAdd("jmp "+node.getLeft().getValue());
+                    }
+                    else if (node.getOp().getValue() == "AND")
+                    {
+                        andOperation(node);
+                    }
+                    else if (node.getOp().getValue() == "OR")
+                    {
+                        orOperation(node);
+                    }
+                    else if (node.getOp().getValue() == "NOT")
+                    {
+                        notOperation(node);
+                    }
+                    else if (node.getOp().getValue() == "for")
+                    {
+                        forOperation(node);
+                    }
                 }
             }
             else if (node.isToken())
@@ -590,6 +753,10 @@ namespace Onyx
                     addReturn();
                 }
                 else if (new TokenDeclaration().isNumber(node.getValue()))
+                {
+                    codeAdd(node.getValue());
+                }
+                else if (new TokenDeclaration().isPoint(node.getValue()))
                 {
                     codeAdd(node.getValue());
                 }
@@ -618,18 +785,6 @@ namespace Onyx
                     // Add some information to the file.
                     fs.Write(info, 0, info.Length);
                 }
-
-                // Open the stream and read it back.
-                using (StreamReader sr = File.OpenText("interpreter.asm"))
-                {
-                    string s = "";
-                    while ((s = sr.ReadLine()) != null)
-                    {
-                        Console.WriteLine(s);
-                    }
-                }
-
-                Console.WriteLine("================\n\nExecute program:");
 
                 if (Win)
                 {

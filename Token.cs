@@ -32,6 +32,13 @@ namespace Onyx
             return this.token;
         }
 
+        //Function for set token type
+        public void setTokenType(TokenTypes type)
+        {
+            tokenType = type;
+        }
+
+        //Output to console information about token
         public void printTokenInfo()
         {
             Console.WriteLine("Token:");

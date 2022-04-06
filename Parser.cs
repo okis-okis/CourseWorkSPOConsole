@@ -50,6 +50,8 @@ namespace Onyx
             //         | REAL
             //         | LPAREN expr RPAREN
             //         | variable
+            //         | true
+            //         | false
 
             Token token = currentToken();
 
@@ -104,19 +106,35 @@ namespace Onyx
             {
                 return new Node(token);
             }
+            else if (token != null && (
+                     token.getToken() == "true" ||
+                     token.getToken() == "false"))
+            {
+                return new Node(token);
+            }
+            else if (token != null &&
+                     token.getToken() == "NOT")
+            {
+                return notStatement();
+            }
+            else if (isLogicValue())
+            {
+                return logicValue();
+            }
             //If not found need factor - anounse error
             Error("Not found factor.");
             return null;
         }
 
-        //term : factor((MUL | DIV) factor)
+        //term : factor((MUL | DIV | AND) factor)
         private Node term()
         {
             Node result = factor();
 
             while (nextToken() != null &&
                  (nextToken().getTokenType() == TokenTypes.mul ||
-                  nextToken().getTokenType() == TokenTypes.div))
+                  nextToken().getTokenType() == TokenTypes.div ||
+                  nextToken().getToken() == "AND"))
             {
                 step();
                 result = new Node(result, new Node(currentToken()), new Node());
@@ -126,14 +144,15 @@ namespace Onyx
             return result;
         }
 
-        //expr : term((PLUS | MINUS) term)
+        //expr : term((PLUS | MINUS | OR) term)
         private Node expr()
         {
             Node result = term();
 
             while (nextToken() != null &&
                   (nextToken().getTokenType() == TokenTypes.plus ||
-                  nextToken().getTokenType() == TokenTypes.minus))
+                  nextToken().getTokenType() == TokenTypes.minus ||
+                  nextToken().getToken() == "OR"))
             {
                 step();
                 result = new Node(result, new Node(currentToken()), new Node());
@@ -418,15 +437,201 @@ namespace Onyx
             }
         }
 
+        //point = text:
+        private Node point()
+        {
+            if(currentToken().getTokenType() == TokenTypes.point)
+            {
+                Node node = new Node(currentToken());
+                return node;
+            }
+            Error("Token is not a point");
+            return null;
+        }
+
+        //gotoStatement = goto point:
+        private Node gotoStatement()
+        {
+            if (currentToken().getTokenType() == TokenTypes.sysWord &&
+                currentToken().getToken() == "goto")
+            {
+                Node op = new Node(currentToken());
+                step();
+                Node left = new Node(currentToken());
+                return new Node(left, op, null);
+            }
+            Error("Operation is not defined");
+            return null;
+        }
+
+        //private function thet check var type
+        //if var type is bool, then return true
+        //else will return false
+        private bool isLogicVar()
+        {
+            if(currentToken() == null)
+            {
+                return false;
+            }
+            foreach(String[] var in varDeclaration)
+            {
+                if(var[0]=="bool" && var[1] == currentToken().getToken())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //private function thet check value type
+        //if value is "true" or "false", then return true
+        //else return false
+        private bool isLogicValue()
+        {
+            if (currentToken() == null)
+            {
+                return false;
+            }
+            if (currentToken().getToken() == "true" ||
+                currentToken().getToken() == "false")
+            {
+                return true;
+            }
+            else if (isLogicVar())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        //return Node with logic value, thet
+        //may be a var or a value
+        private Node logicValue()
+        {
+            if(currentToken() == null)
+            {
+                Error("Current token is null");
+            }
+            if (currentToken().getToken() == "true" ||
+                currentToken().getToken() == "false")
+            {
+                return new Node(currentToken());
+            }
+            else if (isLogicVar())
+            {
+                return new Node(currentToken());
+            }
+            else
+            {
+                Error("Current token is't logical value");
+                return null;
+            }
+        }
+
+        //notStatement = NOT(expr)
+        private Node notStatement()
+        {
+            if(currentToken() == null)
+            {
+                Error("Current token is null");
+                return null;
+            }
+            if(currentToken().getToken() != "NOT")
+            {
+                Error("Current token is't \"NOT\" token");
+            }
+
+            Node op = new Node(currentToken());
+            step();
+            if(currentToken().getToken() != "(")
+            {
+                Error("NOT Statenent: Not found LPAREN.");
+            }
+            step();
+            Node left = expr();
+            step();
+            if (currentToken().getToken() != ")")
+            {
+                Error("NOT Statenent: Not found RPAREN.");
+            }
+            return new Node(left , op, null);
+        }
+
+        //forStatemtn = for(assignState;expr equalSymbol expr;assignState)compound
+        private Node forStatement()
+        {
+            Node op = new Node(currentToken());
+            step();
+
+            if (currentToken().getToken() != "(")
+            {
+                Error("For statement: not found LPAREN");
+            }
+            step();
+
+            Node[] left = new Node[2];
+
+            left[0] = assignState();
+
+            step();
+
+            if (currentToken().getToken() != ";")
+            {
+                Error("For statement: not found LPAREN");
+            }
+            step();
+
+            Node lp = null, opc = null, rp = null;
+            lp = expr();
+            step();
+            opc = equalSymbol();
+            rp = expr();
+            
+            left[1] = new Node(new Node[] { new Node(new Node(lp, opc, rp), new Node(new Token("if")), new Node()) });
+
+            step();
+            if (currentToken().getToken() != ";")
+            {
+                Error("For statement: not found LPAREN");
+            }
+            step();
+
+            Node[] list = new Node[3];
+
+            list[1] = assignState();
+            step();
+            if (currentToken().getToken() != ")")
+            {
+                Error("For statement: not found RPAREN");
+            }
+            step();
+
+            
+            list[0] = compound();
+            list[2] = null;
+
+            left[1].getNodes()[0].setRight(new Node(list));
+
+            //Node[] temp = new Node[]{new Node(left), new Node(new Node(new Node(lp, opc, rp), new Node(new Token("if")), null), op, null)};
+            Node result = new Node(new Node(left), op, null);
+
+            return result;
+        }
+
         //statement = compound
         //          | assignState
         //          | inout
         //          | condition
+        //          | point
+        //          | gotoStatement
+        //          | notStatement
+        //          | forStatement
         //          | empty
         private Node statement()
         {
             if (new TokenDeclaration().isDataType(currentToken().getToken()) || 
-                currentToken().getTokenType() == TokenTypes.var)
+                (currentToken().getTokenType() == TokenTypes.var &&
+                 nextToken().getToken() == "="))
             {
                 return assignState();
             }
@@ -436,7 +641,8 @@ namespace Onyx
                 return compound();
             }
             else if (currentToken().getTokenType() == TokenTypes.sysWord && 
-                    (currentToken().getToken() == "printf" || currentToken().getToken() == "scanf"))
+                    (currentToken().getToken() == "printf" || 
+                    currentToken().getToken() == "scanf"))
             {
                 return inout();
             }
@@ -445,7 +651,26 @@ namespace Onyx
             {
                 return condition();
             }
-            return empty();
+            else if (currentToken().getTokenType() == TokenTypes.point)
+            {
+                return point();
+            }
+            else if (currentToken().getTokenType() == TokenTypes.sysWord &&
+                    currentToken().getToken() == "goto")
+            {
+                return gotoStatement();
+            }
+            else if (currentToken() != null &&
+                     currentToken().getToken() == "NOT")
+            {
+                return notStatement();
+            }
+            else if (currentToken() != null &&
+                     currentToken().getToken() == "for")
+            {
+                return forStatement();
+            }
+                return empty();
         }
 
         //Private function form list of statement
@@ -461,14 +686,17 @@ namespace Onyx
                 return list.ToArray();
             }
 
-            if (currentToken().getToken() != "return" && 
-                currentToken().getToken() != ";")
+            if (previousToken().getTokenType() != TokenTypes.point && 
+                currentToken().getToken() != "return" &&
+                currentToken().getToken() != ";" &&
+                currentToken().getToken() != "goto")
             {
                 step();
             }
 
             while (currentToken().getToken() == ";" || 
-                  (previousToken() != null && previousToken().getToken() == "}"))
+                  (previousToken() != null && previousToken().getToken() == "}") ||
+                  previousToken().getTokenType() == TokenTypes.point)
             {
                 if (currentToken().getToken() == "return" || 
                     nextToken() == null || 
@@ -477,12 +705,14 @@ namespace Onyx
                 {
                     break;
                 }
-                if (previousToken().getToken() != "}")
+                if (previousToken().getToken() != "}" &&
+                    previousToken().getTokenType() != TokenTypes.point)
                 {
                     step();
                 }
                 list.Add(statement());
-                if (currentToken().getToken() != ";" && 
+                if (previousToken().getToken() != "}"&&
+                    currentToken().getToken() != ";" && 
                     currentToken().getToken() != "return")
                 {
                     step();
@@ -492,7 +722,7 @@ namespace Onyx
             return list.ToArray();
         }
 
-        //compound = { statementList }
+        //compound = { statementList } | statenentList
         private Node compound()
         {
             Node compound = null;
@@ -711,6 +941,7 @@ namespace Onyx
 
         }
 
+        //Output of used in source code values
         public void outputValues()
         {
             Console.WriteLine("Declaration value: ");
