@@ -1,6 +1,3 @@
-[submodule "OnyxDocs"]
-	path = OnyxDocs
-	url = ../OnyxDocs.git
 [submodule "docs"]
 	path = docs
 	url = https://github.com/okis-okis/OnyxDocs.git
