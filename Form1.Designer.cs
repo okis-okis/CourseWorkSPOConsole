@@ -30,33 +30,14 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.timeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.openedFileName = new System.Windows.Forms.ToolStripStatusLabel();
             this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.openFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.interpret = new System.Windows.Forms.ToolStripMenuItem();
-            this.closeFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.examplesButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.example1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.example2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.example3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.example4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.example5 = new System.Windows.Forms.ToolStripMenuItem();
-            this.пример6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.пример7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.документацияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutButton = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.interpretTB = new System.Windows.Forms.ToolStripButton();
             this.openTB = new System.Windows.Forms.ToolStripButton();
             this.saveTB = new System.Windows.Forms.ToolStripButton();
             this.closeTB = new System.Windows.Forms.ToolStripButton();
-            this.referenceTB = new System.Windows.Forms.ToolStripButton();
-            this.aboutTB = new System.Windows.Forms.ToolStripButton();
             this.pages = new System.Windows.Forms.TabControl();
             this.codePage = new System.Windows.Forms.TabPage();
             this.codeSplitContainer = new System.Windows.Forms.SplitContainer();
@@ -70,8 +51,15 @@
             this.rpnRichTextBox = new System.Windows.Forms.RichTextBox();
             this.interpretPage = new System.Windows.Forms.TabPage();
             this.interpretRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.pages.SuspendLayout();
             this.codePage.SuspendLayout();
@@ -89,22 +77,15 @@
             // 
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.timeLabel,
             this.toolStripStatusLabel2,
             this.openedFileName,
             this.progressBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 853);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 650);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1352, 42);
+            this.statusStrip1.Size = new System.Drawing.Size(1190, 42);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // timeLabel
-            // 
-            this.timeLabel.Name = "timeLabel";
-            this.timeLabel.Size = new System.Drawing.Size(223, 32);
-            this.timeLabel.Text = "00:00:00 12.04.2022";
             // 
             // toolStripStatusLabel2
             // 
@@ -125,150 +106,6 @@
             this.progressBar.Size = new System.Drawing.Size(100, 30);
             this.progressBar.ToolTipText = "Процесс выполнения интерпретации";
             // 
-            // menuStrip1
-            // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileButton,
-            this.examplesButton,
-            this.документацияToolStripMenuItem,
-            this.aboutButton});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1352, 48);
-            this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // fileButton
-            // 
-            this.fileButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openFile,
-            this.saveFile,
-            this.interpret,
-            this.closeFile});
-            this.fileButton.Name = "fileButton";
-            this.fileButton.Size = new System.Drawing.Size(90, 44);
-            this.fileButton.Text = "Файл";
-            // 
-            // openFile
-            // 
-            this.openFile.Image = global::Onyx.Properties.Resources.open;
-            this.openFile.Name = "openFile";
-            this.openFile.Size = new System.Drawing.Size(356, 44);
-            this.openFile.Text = "Открыть файл";
-            this.openFile.Click += new System.EventHandler(this.openFile_Click);
-            // 
-            // saveFile
-            // 
-            this.saveFile.Image = global::Onyx.Properties.Resources.save;
-            this.saveFile.Name = "saveFile";
-            this.saveFile.Size = new System.Drawing.Size(356, 44);
-            this.saveFile.Text = "Сохранить в файл";
-            this.saveFile.Click += new System.EventHandler(this.сохранитьВФайлToolStripMenuItem_Click);
-            // 
-            // interpret
-            // 
-            this.interpret.Image = global::Onyx.Properties.Resources.interpret;
-            this.interpret.Name = "interpret";
-            this.interpret.Size = new System.Drawing.Size(356, 44);
-            this.interpret.Text = "Интерпретировать";
-            this.interpret.Click += new System.EventHandler(this.интерпретироватьToolStripMenuItem_Click);
-            // 
-            // closeFile
-            // 
-            this.closeFile.Image = global::Onyx.Properties.Resources.close;
-            this.closeFile.Name = "closeFile";
-            this.closeFile.Size = new System.Drawing.Size(356, 44);
-            this.closeFile.Text = "Закрыть файл";
-            this.closeFile.Click += new System.EventHandler(this.закрытьФайлToolStripMenuItem_Click);
-            // 
-            // examplesButton
-            // 
-            this.examplesButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.example1,
-            this.example2,
-            this.example3,
-            this.example4,
-            this.example5,
-            this.пример6ToolStripMenuItem,
-            this.пример7ToolStripMenuItem});
-            this.examplesButton.Name = "examplesButton";
-            this.examplesButton.Size = new System.Drawing.Size(248, 44);
-            this.examplesButton.Text = "Тестовые примеры";
-            this.examplesButton.Click += new System.EventHandler(this.тестовыеПримерыToolStripMenuItem_Click);
-            // 
-            // example1
-            // 
-            this.example1.Image = global::Onyx.Properties.Resources.example1;
-            this.example1.Name = "example1";
-            this.example1.Size = new System.Drawing.Size(538, 44);
-            this.example1.Text = "Пример 1 (переменные)";
-            this.example1.Click += new System.EventHandler(this.example1_Click);
-            // 
-            // example2
-            // 
-            this.example2.Image = global::Onyx.Properties.Resources.example2;
-            this.example2.Name = "example2";
-            this.example2.Size = new System.Drawing.Size(538, 44);
-            this.example2.Text = "Пример 2 (целые числа)";
-            this.example2.Click += new System.EventHandler(this.example2_Click);
-            // 
-            // example3
-            // 
-            this.example3.Image = global::Onyx.Properties.Resources.example3;
-            this.example3.Name = "example3";
-            this.example3.Size = new System.Drawing.Size(538, 44);
-            this.example3.Text = "Пример 3 (дробные числа)";
-            this.example3.Click += new System.EventHandler(this.example3_Click);
-            // 
-            // example4
-            // 
-            this.example4.Image = global::Onyx.Properties.Resources.example4;
-            this.example4.Name = "example4";
-            this.example4.Size = new System.Drawing.Size(538, 44);
-            this.example4.Text = "Пример 4 (булевы значения)";
-            this.example4.Click += new System.EventHandler(this.пример4циклыToolStripMenuItem_Click);
-            // 
-            // example5
-            // 
-            this.example5.Image = global::Onyx.Properties.Resources.example5;
-            this.example5.Name = "example5";
-            this.example5.Size = new System.Drawing.Size(538, 44);
-            this.example5.Text = "Пример 5 (условные переходы)";
-            this.example5.Click += new System.EventHandler(this.example5_Click);
-            // 
-            // пример6ToolStripMenuItem
-            // 
-            this.пример6ToolStripMenuItem.Image = global::Onyx.Properties.Resources.example6;
-            this.пример6ToolStripMenuItem.Name = "пример6ToolStripMenuItem";
-            this.пример6ToolStripMenuItem.Size = new System.Drawing.Size(538, 44);
-            this.пример6ToolStripMenuItem.Text = "Пример 6 (безусловные переходы)";
-            this.пример6ToolStripMenuItem.Click += new System.EventHandler(this.пример6ToolStripMenuItem_Click);
-            // 
-            // пример7ToolStripMenuItem
-            // 
-            this.пример7ToolStripMenuItem.Image = global::Onyx.Properties.Resources.example7;
-            this.пример7ToolStripMenuItem.Name = "пример7ToolStripMenuItem";
-            this.пример7ToolStripMenuItem.Size = new System.Drawing.Size(538, 44);
-            this.пример7ToolStripMenuItem.Text = "Пример 7 (циклы)";
-            this.пример7ToolStripMenuItem.Click += new System.EventHandler(this.пример7ToolStripMenuItem_Click);
-            // 
-            // документацияToolStripMenuItem
-            // 
-            this.документацияToolStripMenuItem.Name = "документацияToolStripMenuItem";
-            this.документацияToolStripMenuItem.Size = new System.Drawing.Size(195, 44);
-            this.документацияToolStripMenuItem.Text = "Документация";
-            this.документацияToolStripMenuItem.Click += new System.EventHandler(this.документацияToolStripMenuItem_Click);
-            // 
-            // aboutButton
-            // 
-            this.aboutButton.Name = "aboutButton";
-            this.aboutButton.Size = new System.Drawing.Size(183, 44);
-            this.aboutButton.Text = "О программе";
-            this.aboutButton.Click += new System.EventHandler(this.aboutButton_Click);
-            // 
             // toolStrip1
             // 
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Right;
@@ -278,15 +115,22 @@
             this.openTB,
             this.saveTB,
             this.closeTB,
-            this.referenceTB,
-            this.aboutTB});
-            this.toolStrip1.Location = new System.Drawing.Point(1306, 48);
+            this.toolStripSeparator1,
+            this.toolStripButton1,
+            this.toolStripButton2,
+            this.toolStripButton3,
+            this.toolStripButton4,
+            this.toolStripButton5,
+            this.toolStripButton6,
+            this.toolStripButton7});
+            this.toolStrip1.Location = new System.Drawing.Point(1144, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Padding = new System.Windows.Forms.Padding(0);
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.toolStrip1.Size = new System.Drawing.Size(46, 805);
+            this.toolStrip1.Size = new System.Drawing.Size(46, 650);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
+            this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
             // 
             // interpretTB
             // 
@@ -332,28 +176,6 @@
             this.closeTB.ToolTipText = "Закрыть файл";
             this.closeTB.Click += new System.EventHandler(this.closeTB_Click);
             // 
-            // referenceTB
-            // 
-            this.referenceTB.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.referenceTB.Image = global::Onyx.Properties.Resources.reference;
-            this.referenceTB.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.referenceTB.Name = "referenceTB";
-            this.referenceTB.Size = new System.Drawing.Size(45, 36);
-            this.referenceTB.Text = "toolStripButton1";
-            this.referenceTB.ToolTipText = "Документация";
-            this.referenceTB.Click += new System.EventHandler(this.referenceTB_Click);
-            // 
-            // aboutTB
-            // 
-            this.aboutTB.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.aboutTB.Image = global::Onyx.Properties.Resources.about;
-            this.aboutTB.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.aboutTB.Name = "aboutTB";
-            this.aboutTB.Size = new System.Drawing.Size(45, 36);
-            this.aboutTB.Text = "toolStripButton5";
-            this.aboutTB.ToolTipText = "О программе";
-            this.aboutTB.Click += new System.EventHandler(this.aboutTB_Click);
-            // 
             // pages
             // 
             this.pages.Controls.Add(this.codePage);
@@ -362,10 +184,10 @@
             this.pages.Controls.Add(this.rpnPage);
             this.pages.Controls.Add(this.interpretPage);
             this.pages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pages.Location = new System.Drawing.Point(0, 48);
+            this.pages.Location = new System.Drawing.Point(0, 0);
             this.pages.Name = "pages";
             this.pages.SelectedIndex = 0;
-            this.pages.Size = new System.Drawing.Size(1306, 805);
+            this.pages.Size = new System.Drawing.Size(1144, 650);
             this.pages.TabIndex = 3;
             // 
             // codePage
@@ -374,7 +196,7 @@
             this.codePage.Location = new System.Drawing.Point(8, 51);
             this.codePage.Name = "codePage";
             this.codePage.Padding = new System.Windows.Forms.Padding(3);
-            this.codePage.Size = new System.Drawing.Size(1290, 746);
+            this.codePage.Size = new System.Drawing.Size(1128, 591);
             this.codePage.TabIndex = 0;
             this.codePage.Text = "Исходный код";
             this.codePage.UseVisualStyleBackColor = true;
@@ -393,8 +215,8 @@
             // codeSplitContainer.Panel2
             // 
             this.codeSplitContainer.Panel2.Controls.Add(this.interpretCodeButton);
-            this.codeSplitContainer.Size = new System.Drawing.Size(1284, 740);
-            this.codeSplitContainer.SplitterDistance = 659;
+            this.codeSplitContainer.Size = new System.Drawing.Size(1122, 585);
+            this.codeSplitContainer.SplitterDistance = 518;
             this.codeSplitContainer.SplitterWidth = 3;
             this.codeSplitContainer.TabIndex = 0;
             // 
@@ -404,7 +226,7 @@
             this.codeRichTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.codeRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.codeRichTextBox.Name = "codeRichTextBox";
-            this.codeRichTextBox.Size = new System.Drawing.Size(1284, 659);
+            this.codeRichTextBox.Size = new System.Drawing.Size(1122, 518);
             this.codeRichTextBox.TabIndex = 0;
             this.codeRichTextBox.Text = "int main(){\n//code\nreturn 0;\n}";
             // 
@@ -412,9 +234,9 @@
             // 
             this.interpretCodeButton.Dock = System.Windows.Forms.DockStyle.Right;
             this.interpretCodeButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.interpretCodeButton.Location = new System.Drawing.Point(1001, 0);
+            this.interpretCodeButton.Location = new System.Drawing.Point(839, 0);
             this.interpretCodeButton.Name = "interpretCodeButton";
-            this.interpretCodeButton.Size = new System.Drawing.Size(283, 78);
+            this.interpretCodeButton.Size = new System.Drawing.Size(283, 64);
             this.interpretCodeButton.TabIndex = 0;
             this.interpretCodeButton.Text = "Интерпретировать код";
             this.interpretCodeButton.UseVisualStyleBackColor = true;
@@ -426,7 +248,7 @@
             this.lexPage.Location = new System.Drawing.Point(8, 51);
             this.lexPage.Name = "lexPage";
             this.lexPage.Padding = new System.Windows.Forms.Padding(3);
-            this.lexPage.Size = new System.Drawing.Size(1290, 754);
+            this.lexPage.Size = new System.Drawing.Size(1267, 711);
             this.lexPage.TabIndex = 1;
             this.lexPage.Text = "Лексический анализ";
             this.lexPage.UseVisualStyleBackColor = true;
@@ -437,7 +259,7 @@
             this.lexRichTextBox.Location = new System.Drawing.Point(3, 3);
             this.lexRichTextBox.Name = "lexRichTextBox";
             this.lexRichTextBox.ReadOnly = true;
-            this.lexRichTextBox.Size = new System.Drawing.Size(1284, 748);
+            this.lexRichTextBox.Size = new System.Drawing.Size(1261, 705);
             this.lexRichTextBox.TabIndex = 0;
             this.lexRichTextBox.Text = "";
             // 
@@ -447,7 +269,7 @@
             this.parserPage.Location = new System.Drawing.Point(8, 51);
             this.parserPage.Name = "parserPage";
             this.parserPage.Padding = new System.Windows.Forms.Padding(3);
-            this.parserPage.Size = new System.Drawing.Size(1290, 754);
+            this.parserPage.Size = new System.Drawing.Size(1267, 711);
             this.parserPage.TabIndex = 2;
             this.parserPage.Text = "Синтаксический анализ";
             this.parserPage.UseVisualStyleBackColor = true;
@@ -458,7 +280,7 @@
             this.syntaxRichTextBox.Location = new System.Drawing.Point(3, 3);
             this.syntaxRichTextBox.Name = "syntaxRichTextBox";
             this.syntaxRichTextBox.ReadOnly = true;
-            this.syntaxRichTextBox.Size = new System.Drawing.Size(1284, 748);
+            this.syntaxRichTextBox.Size = new System.Drawing.Size(1261, 705);
             this.syntaxRichTextBox.TabIndex = 1;
             this.syntaxRichTextBox.Text = "";
             // 
@@ -467,7 +289,7 @@
             this.rpnPage.Controls.Add(this.rpnRichTextBox);
             this.rpnPage.Location = new System.Drawing.Point(8, 51);
             this.rpnPage.Name = "rpnPage";
-            this.rpnPage.Size = new System.Drawing.Size(1290, 754);
+            this.rpnPage.Size = new System.Drawing.Size(1267, 711);
             this.rpnPage.TabIndex = 4;
             this.rpnPage.Text = "ПОЛИЗ";
             this.rpnPage.UseVisualStyleBackColor = true;
@@ -478,7 +300,7 @@
             this.rpnRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.rpnRichTextBox.Name = "rpnRichTextBox";
             this.rpnRichTextBox.ReadOnly = true;
-            this.rpnRichTextBox.Size = new System.Drawing.Size(1290, 754);
+            this.rpnRichTextBox.Size = new System.Drawing.Size(1267, 711);
             this.rpnRichTextBox.TabIndex = 1;
             this.rpnRichTextBox.Text = "";
             // 
@@ -487,7 +309,7 @@
             this.interpretPage.Controls.Add(this.interpretRichTextBox);
             this.interpretPage.Location = new System.Drawing.Point(8, 51);
             this.interpretPage.Name = "interpretPage";
-            this.interpretPage.Size = new System.Drawing.Size(1290, 754);
+            this.interpretPage.Size = new System.Drawing.Size(1267, 711);
             this.interpretPage.TabIndex = 3;
             this.interpretPage.Text = "Интерпретация";
             this.interpretPage.UseVisualStyleBackColor = true;
@@ -498,31 +320,101 @@
             this.interpretRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.interpretRichTextBox.Name = "interpretRichTextBox";
             this.interpretRichTextBox.ReadOnly = true;
-            this.interpretRichTextBox.Size = new System.Drawing.Size(1290, 754);
+            this.interpretRichTextBox.Size = new System.Drawing.Size(1267, 711);
             this.interpretRichTextBox.TabIndex = 2;
             this.interpretRichTextBox.Text = "";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(45, 6);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = global::Onyx.Properties.Resources.example1;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(45, 36);
+            this.toolStripButton1.Text = "Пример 1(переменные)";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // toolStripButton2
+            // 
+            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton2.Image = global::Onyx.Properties.Resources.example2;
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(45, 36);
+            this.toolStripButton2.Text = "Пример 2 (целые числа)";
+            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
+            // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton3.Image = global::Onyx.Properties.Resources.example3;
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(45, 36);
+            this.toolStripButton3.Text = "Пример 3 (дробные числа)";
+            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            // 
+            // toolStripButton4
+            // 
+            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton4.Image = global::Onyx.Properties.Resources.example4;
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(45, 36);
+            this.toolStripButton4.Text = "Пример 4 (булевы значения)";
+            this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
+            // 
+            // toolStripButton5
+            // 
+            this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton5.Image = global::Onyx.Properties.Resources.example5;
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(45, 36);
+            this.toolStripButton5.Text = "Пример 5 (условные переходы)";
+            this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
+            // 
+            // toolStripButton6
+            // 
+            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton6.Image = global::Onyx.Properties.Resources.example6;
+            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton6.Name = "toolStripButton6";
+            this.toolStripButton6.Size = new System.Drawing.Size(45, 36);
+            this.toolStripButton6.Text = "Пример 6 (безусловные переходы)";
+            this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
+            // 
+            // toolStripButton7
+            // 
+            this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton7.Image = global::Onyx.Properties.Resources.example7;
+            this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton7.Name = "toolStripButton7";
+            this.toolStripButton7.Size = new System.Drawing.Size(45, 36);
+            this.toolStripButton7.Text = "Пример 7 (циклы)";
+            this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
             // 
             // Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1352, 895);
+            this.ClientSize = new System.Drawing.Size(1190, 692);
             this.Controls.Add(this.pages);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Onyx";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form_FormClosed);
             this.Load += new System.EventHandler(this.Form_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.pages.ResumeLayout(false);
@@ -543,12 +435,6 @@
         #endregion
 
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem fileButton;
-        private System.Windows.Forms.ToolStripMenuItem openFile;
-        private System.Windows.Forms.ToolStripMenuItem closeFile;
-        private System.Windows.Forms.ToolStripMenuItem saveFile;
-        private System.Windows.Forms.ToolStripMenuItem aboutButton;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton interpretTB;
         private System.Windows.Forms.TabControl pages;
@@ -564,25 +450,20 @@
         private System.Windows.Forms.TabPage rpnPage;
         private System.Windows.Forms.RichTextBox rpnRichTextBox;
         private System.Windows.Forms.RichTextBox interpretRichTextBox;
-        private System.Windows.Forms.ToolStripStatusLabel timeLabel;
-        private System.Windows.Forms.ToolStripMenuItem interpret;
-        private System.Windows.Forms.ToolStripMenuItem examplesButton;
-        private System.Windows.Forms.ToolStripMenuItem example1;
-        private System.Windows.Forms.ToolStripMenuItem example2;
-        private System.Windows.Forms.ToolStripMenuItem example3;
-        private System.Windows.Forms.ToolStripMenuItem example4;
-        private System.Windows.Forms.ToolStripMenuItem example5;
         private System.Windows.Forms.ToolStripButton openTB;
         private System.Windows.Forms.ToolStripButton saveTB;
         private System.Windows.Forms.ToolStripButton closeTB;
-        private System.Windows.Forms.ToolStripButton aboutTB;
-        private System.Windows.Forms.ToolStripMenuItem пример6ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem пример7ToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripStatusLabel openedFileName;
-        private System.Windows.Forms.ToolStripMenuItem документацияToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton referenceTB;
         private System.Windows.Forms.ToolStripProgressBar progressBar;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
+        private System.Windows.Forms.ToolStripButton toolStripButton6;
+        private System.Windows.Forms.ToolStripButton toolStripButton7;
     }
 }
 

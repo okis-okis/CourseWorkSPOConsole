@@ -16,31 +16,11 @@ namespace Onyx
     public partial class Form : System.Windows.Forms.Form
     {
         String path;
-        Thread thread1;
 
         public Form()
         {
             InitializeComponent();
             path = null;
-
-            thread1 = new Thread(timeOutput);
-            thread1.Start();
-        }
-
-        public void timeOutput()
-        {
-            try
-            {
-                while (true)
-                {
-                    timeLabel.Text = DateTime.UtcNow.ToString();
-                    Thread.Sleep(1000);
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
         }
 
         private void interpretCodeButton_Click(object sender, EventArgs e)
@@ -210,8 +190,10 @@ namespace Onyx
                     if (saveFileDialog1.FileName != "")
                     {
                         path = saveFileDialog1.FileName;
+                        openedFileName.Text = path;
                     }
                 }
+                
                 File.WriteAllText(path, codeRichTextBox.Text);
                 MessageBox.Show("File is saved");
             }
@@ -344,7 +326,7 @@ namespace Onyx
 
         private void Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            thread1.Abort();
+            
         }
 
         private void interpretTB_Click(object sender, EventArgs e)
@@ -367,38 +349,54 @@ namespace Onyx
             closeFileOperation();
         }
 
-        private void referenceTB_Click(object sender, EventArgs e)
-        {
-            openReference();
-        }
-
-        private void openReference()
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "https://github.com/okis-okis/Onyx#readme",
-                UseShellExecute = true
-            });
-        }
-
-        private void aboutProgram()
-        {
-            MessageBox.Show("Курсовая работа\nПредмет: СПО\nАвтор:OKIS", "О программе");
-        }
-
-        private void aboutTB_Click(object sender, EventArgs e)
-        {
-            aboutProgram();
-        }
-
         private void aboutButton_Click(object sender, EventArgs e)
         {
-            aboutProgram();
+            
         }
 
         private void документацияToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openReference();
+            
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            openTestFile("test1.c");
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            openTestFile("test2.c");
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            openTestFile("test3.c");
+        }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            openTestFile("test4.c");
+        }
+
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+            openTestFile("test5.c");
+        }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void toolStripButton6_Click(object sender, EventArgs e)
+        {
+            openTestFile("test6.c");
+        }
+
+        private void toolStripButton7_Click(object sender, EventArgs e)
+        {
+            openTestFile("test7.c");
         }
     }
 }
