@@ -1,0 +1,11 @@
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\bin\x86\Release\Onyx.exe.config
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\bin\x86\Release\Onyx.exe
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\bin\x86\Release\Onyx.pdb
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\x86\Release\Onyx.csproj.AssemblyReference.cache
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\x86\Release\Onyx.csproj.SuggestedBindingRedirects.cache
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\x86\Release\Onyx.Form.resources
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\x86\Release\Onyx.Properties.Resources.resources
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\x86\Release\Onyx.csproj.GenerateResource.cache
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\x86\Release\Onyx.csproj.CoreCompileInputs.cache
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\x86\Release\Onyx.exe
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\x86\Release\Onyx.pdb

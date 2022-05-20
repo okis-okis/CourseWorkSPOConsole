@@ -75,7 +75,7 @@ namespace Onyx
 
             errors = new List<String>();
 
-            Win = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            Win = true;
             stage = 0;
             nStage = 0;
             fStage = 0;
@@ -753,7 +753,7 @@ namespace Onyx
                 {
                     DialogResult result = fbd.ShowDialog();
 
-                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    if (result == DialogResult.OK)
                     {
                         tempPath = fbd.SelectedPath;
                     }
@@ -774,7 +774,7 @@ namespace Onyx
                 {
 
                     String command = "/C nasm -f elf -g " + tempPath + "\\result.asm -o " + tempPath + "\\result.o && gcc -m32 " + tempPath + "\\result.o -o " + tempPath + "\\result";
-
+                    //MessageBox.Show(command);
                     var p = new Process
                     {
                         StartInfo =

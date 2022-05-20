@@ -1,0 +1,11 @@
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\bin\Debug\Onyx.exe.config
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\bin\Debug\Onyx.exe
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\bin\Debug\Onyx.pdb
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\Debug\Onyx.csproj.AssemblyReference.cache
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\Debug\Onyx.csproj.SuggestedBindingRedirects.cache
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\Debug\Onyx.Form.resources
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\Debug\Onyx.Properties.Resources.resources
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\Debug\Onyx.csproj.GenerateResource.cache
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\Debug\Onyx.csproj.CoreCompileInputs.cache
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\Debug\Onyx.exe
+D:\KISELNIK\FlashCopy06.04\SPO-2\Onyx\Onyx\obj\Debug\Onyx.pdb

@@ -5,10 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Onyx
@@ -57,7 +54,8 @@ namespace Onyx
 
                 //Output result of lexical analysis
                 lexRichTextBox.Text = getLexicalAnalysisResult(tokenList);
-                String lexRaport = lexRichTextBox.Text.ToString().Split('\n').Last();
+                String[] tempArr = lexRichTextBox.Text.ToString().Split('\n');
+                String lexRaport = tempArr[tempArr.Length-1];
                 progressBar.PerformStep();  //4
 
                 if (lexRaport != "Lexical analysis did successful")
@@ -324,6 +322,20 @@ namespace Onyx
             }
         }
 
+        public void openFile(String fileName)
+        {
+            path = fileName;
+            openedFileName.Text = fileName;
+            try
+            {
+                codeRichTextBox.Text = File.ReadAllText(fileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Can't open file. Error: " + ex.Message);
+            }
+        }
+
         private void Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             
@@ -397,6 +409,26 @@ namespace Onyx
         private void toolStripButton7_Click(object sender, EventArgs e)
         {
             openTestFile("test7.c");
+        }
+
+        private void codeRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void codeSplitContainer_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void codeSplitContainer_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            interpretOperation();
         }
     }
 }

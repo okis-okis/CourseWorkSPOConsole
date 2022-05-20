@@ -38,19 +38,6 @@
             this.openTB = new System.Windows.Forms.ToolStripButton();
             this.saveTB = new System.Windows.Forms.ToolStripButton();
             this.closeTB = new System.Windows.Forms.ToolStripButton();
-            this.pages = new System.Windows.Forms.TabControl();
-            this.codePage = new System.Windows.Forms.TabPage();
-            this.codeSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.codeRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.interpretCodeButton = new System.Windows.Forms.Button();
-            this.lexPage = new System.Windows.Forms.TabPage();
-            this.lexRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.parserPage = new System.Windows.Forms.TabPage();
-            this.syntaxRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.rpnPage = new System.Windows.Forms.TabPage();
-            this.rpnRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.interpretPage = new System.Windows.Forms.TabPage();
-            this.interpretRichTextBox = new System.Windows.Forms.RichTextBox();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -59,14 +46,29 @@
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
+            this.pages = new System.Windows.Forms.TabControl();
+            this.codePage = new System.Windows.Forms.TabPage();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.codeRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.button1 = new System.Windows.Forms.Button();
+            this.lexPage = new System.Windows.Forms.TabPage();
+            this.lexRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.parserPage = new System.Windows.Forms.TabPage();
+            this.syntaxRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.rpnPage = new System.Windows.Forms.TabPage();
+            this.rpnRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.interpretPage = new System.Windows.Forms.TabPage();
+            this.interpretRichTextBox = new System.Windows.Forms.RichTextBox();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.pages.SuspendLayout();
             this.codePage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.codeSplitContainer)).BeginInit();
-            this.codeSplitContainer.Panel1.SuspendLayout();
-            this.codeSplitContainer.Panel2.SuspendLayout();
-            this.codeSplitContainer.SuspendLayout();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             this.lexPage.SuspendLayout();
             this.parserPage.SuspendLayout();
             this.rpnPage.SuspendLayout();
@@ -80,10 +82,10 @@
             this.toolStripStatusLabel2,
             this.openedFileName,
             this.progressBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 650);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 663);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1190, 42);
+            this.statusStrip1.Size = new System.Drawing.Size(1035, 42);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -123,11 +125,11 @@
             this.toolStripButton5,
             this.toolStripButton6,
             this.toolStripButton7});
-            this.toolStrip1.Location = new System.Drawing.Point(1144, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(989, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Padding = new System.Windows.Forms.Padding(0);
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.toolStrip1.Size = new System.Drawing.Size(46, 650);
+            this.toolStrip1.Size = new System.Drawing.Size(46, 663);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
@@ -175,154 +177,6 @@
             this.closeTB.Text = "toolStripButton4";
             this.closeTB.ToolTipText = "Закрыть файл";
             this.closeTB.Click += new System.EventHandler(this.closeTB_Click);
-            // 
-            // pages
-            // 
-            this.pages.Controls.Add(this.codePage);
-            this.pages.Controls.Add(this.lexPage);
-            this.pages.Controls.Add(this.parserPage);
-            this.pages.Controls.Add(this.rpnPage);
-            this.pages.Controls.Add(this.interpretPage);
-            this.pages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pages.Location = new System.Drawing.Point(0, 0);
-            this.pages.Name = "pages";
-            this.pages.SelectedIndex = 0;
-            this.pages.Size = new System.Drawing.Size(1144, 650);
-            this.pages.TabIndex = 3;
-            // 
-            // codePage
-            // 
-            this.codePage.Controls.Add(this.codeSplitContainer);
-            this.codePage.Location = new System.Drawing.Point(8, 51);
-            this.codePage.Name = "codePage";
-            this.codePage.Padding = new System.Windows.Forms.Padding(3);
-            this.codePage.Size = new System.Drawing.Size(1128, 591);
-            this.codePage.TabIndex = 0;
-            this.codePage.Text = "Исходный код";
-            this.codePage.UseVisualStyleBackColor = true;
-            // 
-            // codeSplitContainer
-            // 
-            this.codeSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.codeSplitContainer.Location = new System.Drawing.Point(3, 3);
-            this.codeSplitContainer.Name = "codeSplitContainer";
-            this.codeSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // codeSplitContainer.Panel1
-            // 
-            this.codeSplitContainer.Panel1.Controls.Add(this.codeRichTextBox);
-            // 
-            // codeSplitContainer.Panel2
-            // 
-            this.codeSplitContainer.Panel2.Controls.Add(this.interpretCodeButton);
-            this.codeSplitContainer.Size = new System.Drawing.Size(1122, 585);
-            this.codeSplitContainer.SplitterDistance = 518;
-            this.codeSplitContainer.SplitterWidth = 3;
-            this.codeSplitContainer.TabIndex = 0;
-            // 
-            // codeRichTextBox
-            // 
-            this.codeRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.codeRichTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.codeRichTextBox.Location = new System.Drawing.Point(0, 0);
-            this.codeRichTextBox.Name = "codeRichTextBox";
-            this.codeRichTextBox.Size = new System.Drawing.Size(1122, 518);
-            this.codeRichTextBox.TabIndex = 0;
-            this.codeRichTextBox.Text = "int main(){\n//code\nreturn 0;\n}";
-            // 
-            // interpretCodeButton
-            // 
-            this.interpretCodeButton.Dock = System.Windows.Forms.DockStyle.Right;
-            this.interpretCodeButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.interpretCodeButton.Location = new System.Drawing.Point(839, 0);
-            this.interpretCodeButton.Name = "interpretCodeButton";
-            this.interpretCodeButton.Size = new System.Drawing.Size(283, 64);
-            this.interpretCodeButton.TabIndex = 0;
-            this.interpretCodeButton.Text = "Интерпретировать код";
-            this.interpretCodeButton.UseVisualStyleBackColor = true;
-            this.interpretCodeButton.Click += new System.EventHandler(this.interpretCodeButton_Click);
-            // 
-            // lexPage
-            // 
-            this.lexPage.Controls.Add(this.lexRichTextBox);
-            this.lexPage.Location = new System.Drawing.Point(8, 51);
-            this.lexPage.Name = "lexPage";
-            this.lexPage.Padding = new System.Windows.Forms.Padding(3);
-            this.lexPage.Size = new System.Drawing.Size(1267, 711);
-            this.lexPage.TabIndex = 1;
-            this.lexPage.Text = "Лексический анализ";
-            this.lexPage.UseVisualStyleBackColor = true;
-            // 
-            // lexRichTextBox
-            // 
-            this.lexRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lexRichTextBox.Location = new System.Drawing.Point(3, 3);
-            this.lexRichTextBox.Name = "lexRichTextBox";
-            this.lexRichTextBox.ReadOnly = true;
-            this.lexRichTextBox.Size = new System.Drawing.Size(1261, 705);
-            this.lexRichTextBox.TabIndex = 0;
-            this.lexRichTextBox.Text = "";
-            // 
-            // parserPage
-            // 
-            this.parserPage.Controls.Add(this.syntaxRichTextBox);
-            this.parserPage.Location = new System.Drawing.Point(8, 51);
-            this.parserPage.Name = "parserPage";
-            this.parserPage.Padding = new System.Windows.Forms.Padding(3);
-            this.parserPage.Size = new System.Drawing.Size(1267, 711);
-            this.parserPage.TabIndex = 2;
-            this.parserPage.Text = "Синтаксический анализ";
-            this.parserPage.UseVisualStyleBackColor = true;
-            // 
-            // syntaxRichTextBox
-            // 
-            this.syntaxRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.syntaxRichTextBox.Location = new System.Drawing.Point(3, 3);
-            this.syntaxRichTextBox.Name = "syntaxRichTextBox";
-            this.syntaxRichTextBox.ReadOnly = true;
-            this.syntaxRichTextBox.Size = new System.Drawing.Size(1261, 705);
-            this.syntaxRichTextBox.TabIndex = 1;
-            this.syntaxRichTextBox.Text = "";
-            // 
-            // rpnPage
-            // 
-            this.rpnPage.Controls.Add(this.rpnRichTextBox);
-            this.rpnPage.Location = new System.Drawing.Point(8, 51);
-            this.rpnPage.Name = "rpnPage";
-            this.rpnPage.Size = new System.Drawing.Size(1267, 711);
-            this.rpnPage.TabIndex = 4;
-            this.rpnPage.Text = "ПОЛИЗ";
-            this.rpnPage.UseVisualStyleBackColor = true;
-            // 
-            // rpnRichTextBox
-            // 
-            this.rpnRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rpnRichTextBox.Location = new System.Drawing.Point(0, 0);
-            this.rpnRichTextBox.Name = "rpnRichTextBox";
-            this.rpnRichTextBox.ReadOnly = true;
-            this.rpnRichTextBox.Size = new System.Drawing.Size(1267, 711);
-            this.rpnRichTextBox.TabIndex = 1;
-            this.rpnRichTextBox.Text = "";
-            // 
-            // interpretPage
-            // 
-            this.interpretPage.Controls.Add(this.interpretRichTextBox);
-            this.interpretPage.Location = new System.Drawing.Point(8, 51);
-            this.interpretPage.Name = "interpretPage";
-            this.interpretPage.Size = new System.Drawing.Size(1267, 711);
-            this.interpretPage.TabIndex = 3;
-            this.interpretPage.Text = "Интерпретация";
-            this.interpretPage.UseVisualStyleBackColor = true;
-            // 
-            // interpretRichTextBox
-            // 
-            this.interpretRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.interpretRichTextBox.Location = new System.Drawing.Point(0, 0);
-            this.interpretRichTextBox.Name = "interpretRichTextBox";
-            this.interpretRichTextBox.ReadOnly = true;
-            this.interpretRichTextBox.Size = new System.Drawing.Size(1267, 711);
-            this.interpretRichTextBox.TabIndex = 2;
-            this.interpretRichTextBox.Text = "";
             // 
             // toolStripSeparator1
             // 
@@ -399,11 +253,169 @@
             this.toolStripButton7.Text = "Пример 7 (циклы)";
             this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
             // 
+            // pages
+            // 
+            this.pages.Controls.Add(this.codePage);
+            this.pages.Controls.Add(this.lexPage);
+            this.pages.Controls.Add(this.parserPage);
+            this.pages.Controls.Add(this.rpnPage);
+            this.pages.Controls.Add(this.interpretPage);
+            this.pages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pages.Location = new System.Drawing.Point(0, 0);
+            this.pages.Name = "pages";
+            this.pages.SelectedIndex = 0;
+            this.pages.Size = new System.Drawing.Size(989, 663);
+            this.pages.TabIndex = 3;
+            // 
+            // codePage
+            // 
+            this.codePage.Controls.Add(this.splitContainer1);
+            this.codePage.Location = new System.Drawing.Point(8, 51);
+            this.codePage.Name = "codePage";
+            this.codePage.Padding = new System.Windows.Forms.Padding(3);
+            this.codePage.Size = new System.Drawing.Size(973, 604);
+            this.codePage.TabIndex = 0;
+            this.codePage.Text = "Исходный код";
+            this.codePage.UseVisualStyleBackColor = true;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.codeRichTextBox);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Size = new System.Drawing.Size(967, 598);
+            this.splitContainer1.SplitterDistance = 540;
+            this.splitContainer1.TabIndex = 0;
+            // 
+            // codeRichTextBox
+            // 
+            this.codeRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.codeRichTextBox.Location = new System.Drawing.Point(0, 0);
+            this.codeRichTextBox.Name = "codeRichTextBox";
+            this.codeRichTextBox.Size = new System.Drawing.Size(967, 540);
+            this.codeRichTextBox.TabIndex = 0;
+            this.codeRichTextBox.Text = "";
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.button1);
+            this.splitContainer2.Size = new System.Drawing.Size(967, 54);
+            this.splitContainer2.SplitterDistance = 656;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button1.Location = new System.Drawing.Point(0, 0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(307, 54);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Интерпретировать код";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // lexPage
+            // 
+            this.lexPage.Controls.Add(this.lexRichTextBox);
+            this.lexPage.Location = new System.Drawing.Point(8, 51);
+            this.lexPage.Name = "lexPage";
+            this.lexPage.Padding = new System.Windows.Forms.Padding(3);
+            this.lexPage.Size = new System.Drawing.Size(1138, 597);
+            this.lexPage.TabIndex = 1;
+            this.lexPage.Text = "Лексический анализ";
+            this.lexPage.UseVisualStyleBackColor = true;
+            // 
+            // lexRichTextBox
+            // 
+            this.lexRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lexRichTextBox.Location = new System.Drawing.Point(3, 3);
+            this.lexRichTextBox.Name = "lexRichTextBox";
+            this.lexRichTextBox.ReadOnly = true;
+            this.lexRichTextBox.Size = new System.Drawing.Size(1132, 591);
+            this.lexRichTextBox.TabIndex = 0;
+            this.lexRichTextBox.Text = "";
+            // 
+            // parserPage
+            // 
+            this.parserPage.Controls.Add(this.syntaxRichTextBox);
+            this.parserPage.Location = new System.Drawing.Point(8, 51);
+            this.parserPage.Name = "parserPage";
+            this.parserPage.Padding = new System.Windows.Forms.Padding(3);
+            this.parserPage.Size = new System.Drawing.Size(1138, 597);
+            this.parserPage.TabIndex = 2;
+            this.parserPage.Text = "Синтаксический анализ";
+            this.parserPage.UseVisualStyleBackColor = true;
+            // 
+            // syntaxRichTextBox
+            // 
+            this.syntaxRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.syntaxRichTextBox.Location = new System.Drawing.Point(3, 3);
+            this.syntaxRichTextBox.Name = "syntaxRichTextBox";
+            this.syntaxRichTextBox.ReadOnly = true;
+            this.syntaxRichTextBox.Size = new System.Drawing.Size(1132, 591);
+            this.syntaxRichTextBox.TabIndex = 1;
+            this.syntaxRichTextBox.Text = "";
+            // 
+            // rpnPage
+            // 
+            this.rpnPage.Controls.Add(this.rpnRichTextBox);
+            this.rpnPage.Location = new System.Drawing.Point(8, 51);
+            this.rpnPage.Name = "rpnPage";
+            this.rpnPage.Size = new System.Drawing.Size(1138, 597);
+            this.rpnPage.TabIndex = 4;
+            this.rpnPage.Text = "ПОЛИЗ";
+            this.rpnPage.UseVisualStyleBackColor = true;
+            // 
+            // rpnRichTextBox
+            // 
+            this.rpnRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rpnRichTextBox.Location = new System.Drawing.Point(0, 0);
+            this.rpnRichTextBox.Name = "rpnRichTextBox";
+            this.rpnRichTextBox.ReadOnly = true;
+            this.rpnRichTextBox.Size = new System.Drawing.Size(1138, 597);
+            this.rpnRichTextBox.TabIndex = 1;
+            this.rpnRichTextBox.Text = "";
+            // 
+            // interpretPage
+            // 
+            this.interpretPage.Controls.Add(this.interpretRichTextBox);
+            this.interpretPage.Location = new System.Drawing.Point(8, 51);
+            this.interpretPage.Name = "interpretPage";
+            this.interpretPage.Size = new System.Drawing.Size(1138, 597);
+            this.interpretPage.TabIndex = 3;
+            this.interpretPage.Text = "Интерпретация";
+            this.interpretPage.UseVisualStyleBackColor = true;
+            // 
+            // interpretRichTextBox
+            // 
+            this.interpretRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpretRichTextBox.Location = new System.Drawing.Point(0, 0);
+            this.interpretRichTextBox.Name = "interpretRichTextBox";
+            this.interpretRichTextBox.ReadOnly = true;
+            this.interpretRichTextBox.Size = new System.Drawing.Size(1138, 597);
+            this.interpretRichTextBox.TabIndex = 2;
+            this.interpretRichTextBox.Text = "";
+            // 
             // Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1190, 692);
+            this.ClientSize = new System.Drawing.Size(1035, 705);
             this.Controls.Add(this.pages);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
@@ -419,10 +431,11 @@
             this.toolStrip1.PerformLayout();
             this.pages.ResumeLayout(false);
             this.codePage.ResumeLayout(false);
-            this.codeSplitContainer.Panel1.ResumeLayout(false);
-            this.codeSplitContainer.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.codeSplitContainer)).EndInit();
-            this.codeSplitContainer.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            this.splitContainer2.ResumeLayout(false);
             this.lexPage.ResumeLayout(false);
             this.parserPage.ResumeLayout(false);
             this.rpnPage.ResumeLayout(false);
@@ -439,9 +452,6 @@
         private System.Windows.Forms.ToolStripButton interpretTB;
         private System.Windows.Forms.TabControl pages;
         private System.Windows.Forms.TabPage codePage;
-        private System.Windows.Forms.SplitContainer codeSplitContainer;
-        private System.Windows.Forms.RichTextBox codeRichTextBox;
-        private System.Windows.Forms.Button interpretCodeButton;
         private System.Windows.Forms.TabPage lexPage;
         private System.Windows.Forms.RichTextBox lexRichTextBox;
         private System.Windows.Forms.TabPage parserPage;
@@ -464,6 +474,10 @@
         private System.Windows.Forms.ToolStripButton toolStripButton5;
         private System.Windows.Forms.ToolStripButton toolStripButton6;
         private System.Windows.Forms.ToolStripButton toolStripButton7;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.RichTextBox codeRichTextBox;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.Button button1;
     }
 }
 

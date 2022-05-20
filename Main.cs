@@ -5,41 +5,32 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Onyx
 {
     public partial class Main
     {
-        Thread thread1;
         List<Form> listForms;
+
         public Main()
         {
             InitializeComponent();
-            thread1 = new Thread(timeOutput);
-            thread1.Start();
 
             listForms = new List<Form>();
         }
 
-        public void timeOutput()
+        public Main(String fileName):this()
         {
-            try
-            {
-                while (true)
-                {
-                    timeLabel.Text = DateTime.UtcNow.ToString();
-                    Thread.Sleep(1000);
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
+            //MessageBox.Show(fileName);
+            Form newMDIChild = new Form();
+            listForms.Add(newMDIChild);
+            // Set the Parent Form of the Child window.
+            newMDIChild.MdiParent = this;
+            // Display the new form.
+            newMDIChild.Show();
+            newMDIChild.openFile(fileName);
         }
 
         private void окнаToolStripMenuItem_Click(object sender, EventArgs e)
@@ -73,7 +64,6 @@ namespace Onyx
 
         private void Main_FormClosed(object sender, FormClosedEventArgs e)
         {
-            thread1.Abort();
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -128,6 +118,11 @@ namespace Onyx
             foreach (Form frm in listForms)
                 frm.Close();
             listForms.Clear();
+        }
+
+        private void timeLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
